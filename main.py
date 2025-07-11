@@ -1,11 +1,8 @@
 from fastapi import FastAPI
-from .domain.map import router as map_router
-from .domain.viewer import router as viewer_router
-from .database import Base, engine
+from domain.viewer.router import router as viewer_router
+from domain.map.router import router as map_router
 
-Base.metadata.create_all(bind=engine)
+app = FastAPI(title="자체감사 시스템", version="1.0")
 
-app = FastAPI(title="Gamsa Backend API")
-
-app.include_router(map_router)
-app.include_router(viewer_router)
+app.include_router(viewer_router, prefix="/viewer", tags=["Viewer"])
+app.include_router(map_router, prefix="/maps", tags=["Map"])
