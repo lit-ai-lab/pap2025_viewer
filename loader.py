@@ -60,6 +60,17 @@ def load_json_to_db(jsonPath: Path):
                 get_or_create(session, Region, name=regionName)
                 if regionName else None
             )
+            keywords = item.get("auto_특성", [])
+            if isinstance(keywords, list):
+                keyword = ", ".join(str(x) for x in keywords)
+            else:
+                keyword = str(keywords)
+            typesl = item.get("감사종류", [])
+            types = (
+                ", ".join(str(x) for x in typesl) 
+                if isinstance(typesl, list)
+                else str(typesl)
+            )
 
             # 필드 매핑 처리
             kwargs = {}
@@ -100,6 +111,8 @@ def load_json_to_db(jsonPath: Path):
                 date              = dateVal,
                 result            = safe_get(item, "감사결과종류"),
                 hwpPath           = safe_get(item, "downloaded_file_path"),
+                keyword           = keyword,
+                types             = types,
                 **kwargs
             )
             session.add(case)

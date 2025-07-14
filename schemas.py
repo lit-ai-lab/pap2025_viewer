@@ -62,6 +62,8 @@ class GamsaCaseBase(BaseModel):
     originalText: Optional[str] = None
     analysisText: Optional[str] = None
     hwpPath: Optional[str] = None
+    keyword: Optional[str] = None
+    types: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -109,6 +111,8 @@ class ViewerSchema(BaseModel):
     originalText: Optional[str] = None
     analysisText: Optional[str] = None
     hwpPath: Optional[str] = None
+    keyword: Optional[str] = None
+    types: Optional[str] = None
 
     # Nested relations
     agency: AgencySchema

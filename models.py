@@ -92,6 +92,8 @@ class Viewer(Base):
     originalText = Column(Text)
     analysisText = Column(Text)
     hwpPath = Column(String)
+    keyword = Column(Text, nullable= True)
+    types = Column(Text, nullable = True)
 
 class MapStatistic(Base):
     __tablename__ = "map_statistics"
