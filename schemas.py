@@ -57,7 +57,7 @@ class GamsaCaseBase(BaseModel):
     task_id: int
     field_id: int
     special_case_id: Optional[int] = None
-    date: date
+    date: date  
     result: Optional[str] = None
     summary: Optional[str] = None
     original_text: Optional[str] = None
@@ -93,6 +93,35 @@ class ViewerFilter(BaseModel):
     task_id: Optional[int] = None
     keyword: Optional[str] = None
     include_special: Optional[bool] = False
+
+class ViewerSchema(BaseModel):
+    id: int
+    case_uuid: str
+    agency_id: int
+    related_agency_id: Optional[int] = None
+    region_id: Optional[int] = None
+    audit_type_id: int
+    task_id: int
+    field_id: int
+    special_case_id: Optional[int] = None
+    date: date
+    result: Optional[str] = None
+    summary: Optional[str] = None
+    original_text: Optional[str] = None
+    analysis_text: Optional[str] = None
+    hwp_path: Optional[str] = None
+
+    # Nested relations
+    agency: AgencySchema
+    related_agency: Optional[AgencySchema] = None
+    region: Optional[RegionSchema] = None
+    audit_type: AuditTypeSchema
+    task: TaskSchema
+    field: FieldSchema
+    special_case: Optional[SpecialCaseSchema] = None
+
+    class Config:
+        from_attributes = True
 
 class MapStat(BaseModel):
     region: str

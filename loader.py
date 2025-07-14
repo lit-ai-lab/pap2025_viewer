@@ -115,4 +115,4 @@ def load_json_to_db(json_path: Path):
 
 
 if __name__ == "__main__":
-    load_json_to_db(Path(__file__).parent / "sampledata.json")
+    load_json_to_db(Path(__file__).parent / "sample_data.json")

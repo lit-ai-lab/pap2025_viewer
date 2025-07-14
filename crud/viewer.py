@@ -59,3 +59,14 @@ def get_viewer_by_uuid(db: Session, viewer_id: str) -> Optional[ViewerModel]:
           .filter(ViewerModel.id == viewer_id)
           .first()
     )
+
+
+def get_viewer_by_id(db: Session, viewer_id: int) -> Optional[ViewerModel]:
+    """
+    Primary Key(id)로 Viewer 한 건 조회
+    """
+    return (
+        db.query(ViewerModel)
+          .filter(ViewerModel.id == viewer_id)
+          .first()
+    )
