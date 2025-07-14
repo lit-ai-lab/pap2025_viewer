@@ -27,7 +27,7 @@ class AuditType(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
 
-    cases = relationship('Viewer', back_populates='audit_type')
+    cases = relationship('Viewer', back_populates='auditType')
 
 class SpecialCase(Base):
     __tablename__ = 'special_cases'
@@ -35,14 +35,14 @@ class SpecialCase(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
 
-    cases = relationship('Viewer', back_populates='special_case')
+    cases = relationship('Viewer', back_populates='specialCase')
 
 class Region(Base):
     __tablename__ = 'regions'
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
-    parent_id = Column(Integer, ForeignKey('regions.id'))
+    parentId = Column(Integer, ForeignKey('regions.id'))
     parent = relationship('Region', remote_side=[id], backref='subregions')
 
     agencies = relationship('Agency', back_populates='region')
@@ -53,46 +53,45 @@ class Agency(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
-    region_id = Column(Integer, ForeignKey('regions.id'), nullable=True)
+    regionId = Column(Integer, ForeignKey('regions.id'), nullable=True)
 
     region = relationship('Region', back_populates='agencies')
-    cases = relationship('Viewer', back_populates='agency', foreign_keys='Viewer.agency_id', overlaps="related_cases")
-    related_cases = relationship('Viewer', back_populates='related_agency', foreign_keys='Viewer.related_agency_id', overlaps="cases")
+    cases = relationship('Viewer', back_populates='agency', foreign_keys='Viewer.agencyId', overlaps="relatedCases")
+    relatedCases = relationship('Viewer', back_populates='relatedAgency', foreign_keys='Viewer.relatedAgencyId', overlaps="cases")
 
 class Viewer(Base):
     __tablename__ = 'viewer'
 
     id = Column(Integer, primary_key=True, index=True)
-    case_uuid = Column(String, nullable=False, unique=True, index=True)
+    caseUuid = Column(String, nullable=False, unique=True, index=True)
 
-    agency_id = Column(Integer, ForeignKey('agencies.id'), nullable=False)
-    agency = relationship('Agency', back_populates='cases', foreign_keys=[agency_id], overlaps="related_agency")
+    agencyId = Column(Integer, ForeignKey('agencies.id'), nullable=False)
+    agency = relationship('Agency', back_populates='cases', foreign_keys=[agencyId], overlaps="relatedAgency")
 
-    related_agency_id = Column(Integer, ForeignKey('agencies.id'))
-    related_agency = relationship('Agency', back_populates='related_cases', foreign_keys=[related_agency_id], overlaps="agency")
+    relatedAgencyId = Column(Integer, ForeignKey('agencies.id'))
+    relatedAgency = relationship('Agency', back_populates='relatedCases', foreign_keys=[relatedAgencyId], overlaps="agency")
 
-    region_id = Column(Integer, ForeignKey('regions.id'), nullable=True)
+    regionId = Column(Integer, ForeignKey('regions.id'), nullable=True)
     region = relationship('Region', back_populates='cases')
 
-    audit_type_id = Column(Integer, ForeignKey('audit_types.id'), nullable=False)
-    audit_type = relationship('AuditType', back_populates='cases')
+    auditTypeId = Column(Integer, ForeignKey('audit_types.id'), nullable=False)
+    auditType = relationship('AuditType', back_populates='cases')
 
-    task_id = Column(Integer, ForeignKey('tasks.id'), nullable=False)
+    taskId = Column(Integer, ForeignKey('tasks.id'), nullable=False)
     task = relationship('Task', back_populates='cases')
 
-    field_id = Column(Integer, ForeignKey('fields.id'), nullable=False)
+    fieldId = Column(Integer, ForeignKey('fields.id'), nullable=False)
     field = relationship('Field', back_populates='cases')
 
-    special_case_id = Column(Integer, ForeignKey('special_cases.id'))
-    special_case = relationship('SpecialCase', back_populates='cases')
+    specialCaseId = Column(Integer, ForeignKey('special_cases.id'))
+    specialCase = relationship('SpecialCase', back_populates='cases')
 
     date = Column(Date)
     result = Column(Text)
     summary = Column(Text)
-    original_text = Column(Text)
-    analysis_text = Column(Text)
-    hwp_path = Column(String)
-
+    originalText = Column(Text)
+    analysisText = Column(Text)
+    hwpPath = Column(String)
 
 class MapStatistic(Base):
     __tablename__ = "map_statistics"
