@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine, Base
 from models import (
-    Agency, Region, Field, Task, AuditType, Viewer
+    Agency, Region, Category, Task, AuditType, Viewer
 )
 
 # 테이블 생성(테스트용)
@@ -13,7 +13,7 @@ from models import (
 # 필드 매핑 설정: JSON 키 -> (속성 접두사, 기본값)
 FIELD_MAPPING = {
     "auto_구분":    ("auditType",     "기타"),
-    "auto_분야":    ("field",         "기타"),
+    "auto_분야":    ("category",         "기타"),
     "auto_업무":    ("task",          "기타"),
     "auto_요약":    ("summary",       ""),
     "auto_판단이유":("analysisText",  ""),
@@ -70,8 +70,8 @@ def load_json_to_db(jsonPath: Path):
                     parts = raw.split(" ", 1)
                     raw = parts[-1] if len(parts) > 1 else raw
 
-                if attr in ("field", "task", "auditType"):
-                    model = {"field": Field, "task": Task, "auditType": AuditType}[attr]
+                if attr in ("category", "task", "auditType"):
+                    model = {"category": Category, "task": Task, "auditType": AuditType}[attr]
                     inst  = get_or_create(session, model, name=raw or default)
                     kwargs[f"{attr}Id"] = inst.id
                 else:

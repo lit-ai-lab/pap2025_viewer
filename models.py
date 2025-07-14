@@ -5,13 +5,13 @@ from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
-class Field(Base):
-    __tablename__ = 'fields'
+class Category(Base):
+    __tablename__ = 'categorys'
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
 
-    cases = relationship('Viewer', back_populates='field')
+    cases = relationship('Viewer', back_populates='category')
 
 class Task(Base):
     __tablename__ = 'tasks'
@@ -80,8 +80,8 @@ class Viewer(Base):
     taskId = Column(Integer, ForeignKey('tasks.id'), nullable=False)
     task = relationship('Task', back_populates='cases')
 
-    fieldId = Column(Integer, ForeignKey('fields.id'), nullable=False)
-    field = relationship('Field', back_populates='cases')
+    categoryId = Column(Integer, ForeignKey('categorys.id'), nullable=False)
+    category = relationship('Category', back_populates='cases')
 
     specialCaseId = Column(Integer, ForeignKey('special_cases.id'))
     specialCase = relationship('SpecialCase', back_populates='cases')

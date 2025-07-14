@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date
 
-class FieldSchema(BaseModel):
+class CategorySchema(BaseModel):
     id: int
     name: str
 
@@ -54,7 +54,7 @@ class GamsaCaseBase(BaseModel):
     regionId: Optional[int] = None
     auditTypeId: int
     taskId: int
-    fieldId: int
+    categoryId: int
     specialCaseId: Optional[int] = None
     date: date  
     result: Optional[str] = None
@@ -76,7 +76,7 @@ class Viewer(GamsaCaseBase):
     region: Optional[RegionSchema] = None
     auditType: AuditTypeSchema
     task: TaskSchema
-    field: FieldSchema
+    category: CategorySchema
     specialCase: Optional[SpecialCaseSchema] = None
 
     class Config:
@@ -88,7 +88,7 @@ class ViewerFilter(BaseModel):
     auditTypeId: Optional[int] = None
     startDate: Optional[date] = None
     endDate: Optional[date] = None
-    fieldId: Optional[int] = None
+    categoryId: Optional[int] = None
     taskId: Optional[int] = None
     keyword: Optional[str] = None
     includeSpecial: Optional[bool] = False
@@ -101,7 +101,7 @@ class ViewerSchema(BaseModel):
     regionId: Optional[int] = None
     auditTypeId: int
     taskId: int
-    fieldId: int
+    categoryId: int
     specialCaseId: Optional[int] = None
     date: date
     result: Optional[str] = None
@@ -116,7 +116,7 @@ class ViewerSchema(BaseModel):
     region: Optional[RegionSchema] = None
     auditType: AuditTypeSchema
     task: TaskSchema
-    field: FieldSchema
+    category: CategorySchema
     specialCase: Optional[SpecialCaseSchema] = None
 
     class Config:

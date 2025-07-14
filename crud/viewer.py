@@ -32,9 +32,9 @@ def getViewers(db: Session, filters: ViewerFilter) -> List[ViewerModel]:
     elif filters.endDate:
         query = query.filter(ViewerModel.date <= filters.endDate)
 
-    # field filter
-    if filters.fieldId is not None:
-        query = query.filter(ViewerModel.fieldId == filters.fieldId)
+    # category filter
+    if filters.categoryId is not None:
+        query = query.filter(ViewerModel.categoryId == filters.categoryId)
 
     # task filter
     if filters.taskId is not None:
