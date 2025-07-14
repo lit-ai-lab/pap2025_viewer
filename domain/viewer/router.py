@@ -5,6 +5,7 @@ from schemas import Viewer, ViewerFilter
 from crud import viewer
 from utils.excel import generate_excel_file
 from fastapi.responses import FileResponse
+from fastapi import HTTPException
 from typing import List
 import os
 
@@ -16,9 +17,12 @@ def filter_viewers(filters: ViewerFilter, db: Session = Depends(get_db)):
     return viewer.get_viewers(db, filters)
 
 
-@router.get("/{viewer_id}", response_model=Viewer)
-def read_viewer(viewer_id: int, db: Session = Depends(get_db)):
-    return viewer.get_viewer_by_id(db, viewer_id)
+@router.get("/{case_uuid}", response_model=Viewer)
+def read_viewer(case_uuid: str, db: Session = Depends(get_db)):
+    result = viewer.get_viewer_by_uuid(db, case_uuid)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Viewer not found")
+    return result
 
 
 @router.post("/filter/excel")

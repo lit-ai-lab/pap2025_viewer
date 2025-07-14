@@ -1,4 +1,4 @@
-# 📁 schemas.py
+# schemas.py
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date
@@ -10,14 +10,12 @@ class FieldSchema(BaseModel):
     class Config:
         from_attributes = True
 
-
 class TaskSchema(BaseModel):
     id: int
     name: str
 
     class Config:
         from_attributes = True
-
 
 class AuditTypeSchema(BaseModel):
     id: int
@@ -26,7 +24,6 @@ class AuditTypeSchema(BaseModel):
     class Config:
         from_attributes = True
 
-
 class SpecialCaseSchema(BaseModel):
     id: int
     name: str
@@ -34,25 +31,23 @@ class SpecialCaseSchema(BaseModel):
     class Config:
         from_attributes = True
 
-
 class RegionSchema(BaseModel):
     id: int
     name: str
-    parent_id: Optional[int]
+    parent_id: Optional[int] = None
 
     class Config:
         from_attributes = True
-
 
 class AgencySchema(BaseModel):
     id: int
     name: str
-    region_id: int
+    region_id: Optional[int] = None
 
     class Config:
         from_attributes = True
 
-
+# 공통 필드 정의
 class GamsaCaseBase(BaseModel):
     case_uuid: str
     agency_id: int
@@ -62,12 +57,15 @@ class GamsaCaseBase(BaseModel):
     task_id: int
     field_id: int
     special_case_id: Optional[int] = None
-    date: Optional[date] = None
+    date: date
     result: Optional[str] = None
     summary: Optional[str] = None
     original_text: Optional[str] = None
     analysis_text: Optional[str] = None
     hwp_path: Optional[str] = None
+
+    class Config:
+        from_attributes = True
 
 class ViewerCreate(GamsaCaseBase):
     pass
@@ -84,7 +82,6 @@ class Viewer(GamsaCaseBase):
 
     class Config:
         from_attributes = True
-
 
 class ViewerFilter(BaseModel):
     region_id: Optional[int] = None
@@ -103,5 +100,3 @@ class MapStat(BaseModel):
 
     class Config:
         from_attributes = True
-
-#기존과 다른 변수 이름바꾸기

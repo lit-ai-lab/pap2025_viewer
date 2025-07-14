@@ -53,24 +53,25 @@ class Agency(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, unique=True)
-    region_id = Column(Integer, ForeignKey('regions.id'), nullable=False)
+    region_id = Column(Integer, ForeignKey('regions.id'), nullable=True)
 
     region = relationship('Region', back_populates='agencies')
-    cases = relationship('Viewer', back_populates='agency', foreign_keys='Viewer.related_agency_id')
+    cases = relationship('Viewer', back_populates='agency', foreign_keys='Viewer.agency_id', overlaps="related_cases")
+    related_cases = relationship('Viewer', back_populates='related_agency', foreign_keys='Viewer.related_agency_id', overlaps="cases")
 
 class Viewer(Base):
-    __tablename__ = 'gamsa_cases'
+    __tablename__ = 'viewer'
 
     id = Column(Integer, primary_key=True, index=True)
     case_uuid = Column(String, nullable=False, unique=True, index=True)
 
     agency_id = Column(Integer, ForeignKey('agencies.id'), nullable=False)
-    agency = relationship('Agency', back_populates='cases', foreign_keys=[agency_id])
+    agency = relationship('Agency', back_populates='cases', foreign_keys=[agency_id], overlaps="related_agency")
 
     related_agency_id = Column(Integer, ForeignKey('agencies.id'))
-    related_agency = relationship('Agency', foreign_keys=[related_agency_id])
+    related_agency = relationship('Agency', back_populates='related_cases', foreign_keys=[related_agency_id], overlaps="agency")
 
-    region_id = Column(Integer, ForeignKey('regions.id'))
+    region_id = Column(Integer, ForeignKey('regions.id'), nullable=True)
     region = relationship('Region', back_populates='cases')
 
     audit_type_id = Column(Integer, ForeignKey('audit_types.id'), nullable=False)

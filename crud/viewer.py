@@ -1,32 +1,61 @@
+# crud/viewer.py
 from sqlalchemy.orm import Session
-from models import Viewer
-from schemas import ViewerCreate, ViewerFilter
-from typing import List
-from sqlalchemy import and_, or_
+from models import Viewer as ViewerModel
+from schemas import ViewerFilter
+from typing import List, Optional
 
 
-def get_viewers(db: Session, filters: ViewerFilter) -> List[Viewer]:
-    query = db.query(Viewer)
+def get_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel]:
+    """
+    Apply filters from ViewerFilter to retrieve matching ViewerModel records.
+    """
+    query = db.query(ViewerModel)
 
-    if filters.지역:
-        query = query.filter(Viewer.기관명.contains(filters.지역))
-    if filters.감사실시기관:
-        query = query.filter(Viewer.기관명 == filters.감사실시기관)
-    if filters.감사종류:
-        query = query.filter(Viewer.감사결과 == filters.감사종류)
-    if filters.시작일자 and filters.종료일자:
-        query = query.filter(Viewer.감사실시일자.between(filters.시작일자, filters.종료일자))
-    if filters.분야:
-        query = query.filter(Viewer.분야 == filters.분야)
-    if filters.업무:
-        query = query.filter(Viewer.업무 == filters.업무)
-    if filters.키워드:
-        query = query.filter(Viewer.요약.contains(filters.키워드))
-    if filters.특이사례포함:
-        query = query.filter(Viewer.특이사례 == True)
+    # region filter (by region_id)
+    if filters.region_id is not None:
+        query = query.filter(ViewerModel.region_id == filters.region_id)
+
+    # agency filter (by agency_id)
+    if filters.agency_id is not None:
+        query = query.filter(ViewerModel.agency_id == filters.agency_id)
+
+    # audit type filter
+    if filters.audit_type_id is not None:
+        query = query.filter(ViewerModel.audit_type_id == filters.audit_type_id)
+
+    # date range filter
+    if filters.start_date and filters.end_date:
+        query = query.filter(
+            ViewerModel.date.between(filters.start_date, filters.end_date)
+        )
+    elif filters.start_date:
+        query = query.filter(ViewerModel.date >= filters.start_date)
+    elif filters.end_date:
+        query = query.filter(ViewerModel.date <= filters.end_date)
+
+    # field filter
+    if filters.field_id is not None:
+        query = query.filter(ViewerModel.field_id == filters.field_id)
+
+    # task filter
+    if filters.task_id is not None:
+        query = query.filter(ViewerModel.task_id == filters.task_id)
+
+    # keyword in summary
+    if filters.keyword:
+        query = query.filter(ViewerModel.summary.contains(filters.keyword))
+
+    # include only those with special_case
+    if filters.include_special:
+        query = query.filter(ViewerModel.special_case_id.is_not(None))
 
     return query.all()
 
 
-def get_viewer_by_id(db: Session, viewer_id: int) -> Viewer:
-    return db.query(Viewer).filter(Viewer.id == viewer_id).first()
+def get_viewer_by_uuid(db: Session, viewer_id: str) -> Optional[ViewerModel]:
+    """Retrieve a single ViewerModel by its primary key ID."""
+    return (
+        db.query(ViewerModel)
+          .filter(ViewerModel.id == viewer_id)
+          .first()
+    )
