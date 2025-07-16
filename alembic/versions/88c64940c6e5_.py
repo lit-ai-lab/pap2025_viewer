@@ -1,8 +1,8 @@
-"""Create all tables
+"""empty message
 
-Revision ID: 12c25c293a84
-Revises: 
-Create Date: 2025-07-14 05:58:15.642482
+Revision ID: 88c64940c6e5
+Revises: d62dc2fa2764
+Create Date: 2025-07-16 05:48:18.386391
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '12c25c293a84'
-down_revision: Union[str, Sequence[str], None] = None
+revision: str = '88c64940c6e5'
+down_revision: Union[str, Sequence[str], None] = 'd62dc2fa2764'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -28,13 +28,13 @@ def upgrade() -> None:
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_audit_types_id'), 'audit_types', ['id'], unique=False)
-    op.create_table('fields',
+    op.create_table('categorys',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
-    op.create_index(op.f('ix_fields_id'), 'fields', ['id'], unique=False)
+    op.create_index(op.f('ix_categorys_id'), 'categorys', ['id'], unique=False)
     op.create_table('map_statistics',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('region', sa.String(), nullable=True),
@@ -47,8 +47,8 @@ def upgrade() -> None:
     op.create_table('regions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('parent_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['parent_id'], ['regions.id'], ),
+    sa.Column('parentId', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['parentId'], ['regions.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -70,48 +70,50 @@ def upgrade() -> None:
     op.create_table('agencies',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('region_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['region_id'], ['regions.id'], ),
+    sa.Column('regionId', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['regionId'], ['regions.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_agencies_id'), 'agencies', ['id'], unique=False)
-    op.create_table('gamsa_cases',
+    op.create_table('viewer',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('case_uuid', sa.String(), nullable=False),
-    sa.Column('agency_id', sa.Integer(), nullable=False),
-    sa.Column('related_agency_id', sa.Integer(), nullable=True),
-    sa.Column('region_id', sa.Integer(), nullable=True),
-    sa.Column('audit_type_id', sa.Integer(), nullable=False),
-    sa.Column('task_id', sa.Integer(), nullable=False),
-    sa.Column('field_id', sa.Integer(), nullable=False),
-    sa.Column('special_case_id', sa.Integer(), nullable=True),
+    sa.Column('caseUuid', sa.String(), nullable=False),
+    sa.Column('agencyId', sa.Integer(), nullable=False),
+    sa.Column('relatedAgencyId', sa.Integer(), nullable=True),
+    sa.Column('regionId', sa.Integer(), nullable=True),
+    sa.Column('auditTypeId', sa.Integer(), nullable=False),
+    sa.Column('taskId', sa.Integer(), nullable=False),
+    sa.Column('categoryId', sa.Integer(), nullable=False),
+    sa.Column('specialCaseId', sa.Integer(), nullable=True),
     sa.Column('date', sa.Date(), nullable=True),
     sa.Column('result', sa.Text(), nullable=True),
     sa.Column('summary', sa.Text(), nullable=True),
-    sa.Column('original_text', sa.Text(), nullable=True),
-    sa.Column('analysis_text', sa.Text(), nullable=True),
-    sa.Column('hwp_path', sa.String(), nullable=True),
-    sa.ForeignKeyConstraint(['agency_id'], ['agencies.id'], ),
-    sa.ForeignKeyConstraint(['audit_type_id'], ['audit_types.id'], ),
-    sa.ForeignKeyConstraint(['field_id'], ['fields.id'], ),
-    sa.ForeignKeyConstraint(['region_id'], ['regions.id'], ),
-    sa.ForeignKeyConstraint(['related_agency_id'], ['agencies.id'], ),
-    sa.ForeignKeyConstraint(['special_case_id'], ['special_cases.id'], ),
-    sa.ForeignKeyConstraint(['task_id'], ['tasks.id'], ),
+    sa.Column('originalText', sa.Text(), nullable=True),
+    sa.Column('analysisText', sa.Text(), nullable=True),
+    sa.Column('hwpPath', sa.String(), nullable=True),
+    sa.Column('keyword', sa.Text(), nullable=True),
+    sa.Column('types', sa.Text(), nullable=True),
+    sa.ForeignKeyConstraint(['agencyId'], ['agencies.id'], ),
+    sa.ForeignKeyConstraint(['auditTypeId'], ['audit_types.id'], ),
+    sa.ForeignKeyConstraint(['categoryId'], ['categorys.id'], ),
+    sa.ForeignKeyConstraint(['regionId'], ['regions.id'], ),
+    sa.ForeignKeyConstraint(['relatedAgencyId'], ['agencies.id'], ),
+    sa.ForeignKeyConstraint(['specialCaseId'], ['special_cases.id'], ),
+    sa.ForeignKeyConstraint(['taskId'], ['tasks.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_gamsa_cases_case_uuid'), 'gamsa_cases', ['case_uuid'], unique=True)
-    op.create_index(op.f('ix_gamsa_cases_id'), 'gamsa_cases', ['id'], unique=False)
+    op.create_index(op.f('ix_viewer_caseUuid'), 'viewer', ['caseUuid'], unique=True)
+    op.create_index(op.f('ix_viewer_id'), 'viewer', ['id'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     """Downgrade schema."""
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index(op.f('ix_gamsa_cases_id'), table_name='gamsa_cases')
-    op.drop_index(op.f('ix_gamsa_cases_case_uuid'), table_name='gamsa_cases')
-    op.drop_table('gamsa_cases')
+    op.drop_index(op.f('ix_viewer_id'), table_name='viewer')
+    op.drop_index(op.f('ix_viewer_caseUuid'), table_name='viewer')
+    op.drop_table('viewer')
     op.drop_index(op.f('ix_agencies_id'), table_name='agencies')
     op.drop_table('agencies')
     op.drop_index(op.f('ix_tasks_id'), table_name='tasks')
@@ -122,8 +124,8 @@ def downgrade() -> None:
     op.drop_table('regions')
     op.drop_index(op.f('ix_map_statistics_id'), table_name='map_statistics')
     op.drop_table('map_statistics')
-    op.drop_index(op.f('ix_fields_id'), table_name='fields')
-    op.drop_table('fields')
+    op.drop_index(op.f('ix_categorys_id'), table_name='categorys')
+    op.drop_table('categorys')
     op.drop_index(op.f('ix_audit_types_id'), table_name='audit_types')
     op.drop_table('audit_types')
     # ### end Alembic commands ###

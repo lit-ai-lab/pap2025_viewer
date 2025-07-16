@@ -27,18 +27,20 @@ router = APIRouter(prefix="/api/viewer", tags=["Viewer"])
 def list_viewers(
     regionId:      Optional[int]  = Query(None),
     agencyId:      Optional[int]  = Query(None),
+    relatedAgencyId: Optional[int] = Query(None),
     auditTypeId:   Optional[int]  = Query(None),
     startDate:     Optional[date] = Query(None),
     endDate:       Optional[date] = Query(None),
     categoryId:    Optional[int]  = Query(None),
     taskId:        Optional[int]  = Query(None),
     keyword:       Optional[str]  = Query(None),
-    includeSpecial: bool          = Query(False),
+    includeSpecial: bool          = Query(None),
     db:            Session        = Depends(get_db),
 ):
     filters = ViewerFilter(
         regionId=regionId,
         agencyId=agencyId,
+        relatedAgencyId = relatedAgencyId,
         auditTypeId=auditTypeId,
         startDate=startDate,
         endDate=endDate,

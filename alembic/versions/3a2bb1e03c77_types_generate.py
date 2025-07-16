@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = '3a2bb1e03c77'
-down_revision: Union[str, Sequence[str], None] = 'e3a4b1a1c23b'
+down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -103,7 +103,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['taskId'], ['tasks.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_viewer_caseUuid'), 'viewer', ['caseUuid'], unique=True)
+    op.create_index(op.f('ix_   iewer_caseUuid'), 'viewer', ['caseUuid'], unique=True)
     op.create_index(op.f('ix_viewer_id'), 'viewer', ['id'], unique=False)
     # ### end Alembic commands ###
 
