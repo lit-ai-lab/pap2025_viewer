@@ -81,6 +81,12 @@ def resolve_state_name(entry: dict) -> str | None:
                 return region
     return None
 
+def extract_start_date(date_range: str) -> str | None:
+    try:
+        return date_range.split("~")[0].strip()
+    except Exception:
+        return None
+
 
 # -----------------------
 # DB 초기화
@@ -110,6 +116,9 @@ def load_json_to_db(json_path: Path):
         for item in raw_data:
             state = resolve_state_name(item)
             inspection_agency = safe_get(item, "감사실시기관")
+            inspection_type = safe_get(item, "감사종류")
+            raw_date = safe_get(item, "감사기간")
+            date = extract_start_date(raw_date) if raw_date else None
             audit_result = safe_get(item, "처분요구 및 조치사항")            
             related_agency = safe_get(item, "관련기관")
             disposition_request = safe_get(item, "감사결과종류")
@@ -128,6 +137,8 @@ def load_json_to_db(json_path: Path):
                 task=task,
                 summary=summary,
                 specialCase = special_case,
+                inspectionType=inspection_type,
+                date=date
             )
             session.add(viewer_entry)
             inserted += 1

@@ -76,6 +76,8 @@ class Viewer(Base):
     task = Column(String, nullable=True)                 # 업무 (auto_업무)
     summary = Column(Text, nullable=True)                # auto_요약
     specialCase = Column(Text, nullable=True)         # 특이사례 여부
+    date = Column(String, nullable=True)
+    inspectionType = Column(String, nullable=True)
 
 
 class MapStatistic(Base):
