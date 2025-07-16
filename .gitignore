@@ -56,3 +56,6 @@ build/
 *.bak
 *.swp
 *.json
+
+alembic/
+alembic.ini

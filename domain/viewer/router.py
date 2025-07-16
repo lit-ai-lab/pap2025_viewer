@@ -1,18 +1,13 @@
-# domain/viewer/router.py
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import date
 import os
 
 from database import get_db
-from schemas import ViewerSchema, ViewerFilter
+from schemas import Viewer, ViewerFilter  # ViewerSchema → Viewer
 from crud.viewer import (
     get_filtered_viewers,
-    get_viewer_by_id,
-    get_viewer_by_uuid,
 )
 from utils.excel import generate_excel_file
 
@@ -21,57 +16,30 @@ router = APIRouter(prefix="/api/viewer", tags=["Viewer"])
 
 @router.get(
     "/",
-    response_model=List[ViewerSchema],
+    response_model=List[Viewer],
     summary="필터에 맞춘 Viewer 목록 조회",
 )
 def list_viewers(
-    regionId:      Optional[int]  = Query(None),
-    agencyId:      Optional[int]  = Query(None),
-    auditTypeId:   Optional[int]  = Query(None),
-    startDate:     Optional[date] = Query(None),
-    endDate:       Optional[date] = Query(None),
-    categoryId:    Optional[int]  = Query(None),
-    taskId:        Optional[int]  = Query(None),
-    keyword:       Optional[str]  = Query(None),
-    includeSpecial: bool          = Query(False),
-    db:            Session        = Depends(get_db),
+    region_id:      Optional[str] = Query(None),
+    agency_id:      Optional[str] = Query(None),
+    audit_type_id:   Optional[str] = Query(None),
+    category_id:    Optional[str] = Query(None),
+    task_id:        Optional[str] = Query(None),
+    keyword:       Optional[str] = Query(None),
+    include_special: bool         = Query(False),
+    db:            Session       = Depends(get_db),
 ):
     filters = ViewerFilter(
-        regionId=regionId,
-        agencyId=agencyId,
-        auditTypeId=auditTypeId,
-        startDate=startDate,
-        endDate=endDate,
-        categoryId=categoryId,
-        taskId=taskId,
+        region_id=region_id,
+        agency_id=agency_id,
+        audit_type_id=audit_type_id,
+        category_id=category_id,
+        task_id=task_id,
         keyword=keyword,
-        includeSpecial=includeSpecial,
+        include_special=include_special,
     )
     return get_filtered_viewers(db, filters)
 
-
-@router.get(
-    "/id/{viewer_id}",
-    response_model=ViewerSchema,
-    summary="PK(id)로 Viewer 상세 조회",
-)
-def read_by_id(viewer_id: int, db: Session = Depends(get_db)):
-    viewer = get_viewer_by_id(db, viewer_id)
-    if not viewer:
-        raise HTTPException(status_code=404, detail="Viewer not found")
-    return viewer
-
-
-@router.get(
-    "/uuid/{case_uuid}",
-    response_model=ViewerSchema,
-    summary="caseUuid로 Viewer 상세 조회",
-)
-def read_by_uuid(case_uuid: str, db: Session = Depends(get_db)):
-    viewer = get_viewer_by_uuid(db, case_uuid)
-    if not viewer:
-        raise HTTPException(status_code=404, detail="Viewer not found")
-    return viewer
 
 
 @router.post(
@@ -80,7 +48,7 @@ def read_by_uuid(case_uuid: str, db: Session = Depends(get_db)):
 )
 def export_excel(
     filters: ViewerFilter,
-    db:      Session = Depends(get_db),
+    db: Session = Depends(get_db),
 ):
     records = get_filtered_viewers(db, filters)
     file_path = generate_excel_file(records)
