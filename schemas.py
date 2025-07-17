@@ -4,11 +4,11 @@ from typing import Optional
 # 필터용 스키마 (프론트 요청 시 사용)
 from typing import Optional
 
-# 필터용 스키마 (프론트 요청 시 사용)
-class ViewerFilter(BaseModel):
-    region_id: Optional[str] = None  # 지역명 텍스트
-    agency_id: Optional[str] = None  # 감사실시기관 텍스트
-    audit_type_id: Optional[str] = None  # 감사결과종류 텍스트
+# # 필터용 스키마 (프론트 요청 시 사용)
+# class ViewerFilter(BaseModel):
+#     region_id: Optional[str] = None  # 지역명 텍스트
+#     agency_id: Optional[str] = None  # 감사실시기관 텍스트
+#     audit_type_id: Optional[str] = None  # 감사결과종류 텍스트
 
 # 단일 조회 시 응답
 class Viewer(BaseModel):
