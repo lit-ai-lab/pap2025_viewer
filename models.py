@@ -22,8 +22,10 @@ class Viewer(Base):
     task = Column(String, nullable=True)                 # 업무 (auto_업무)
     summary = Column(Text, nullable=True)                # auto_요약
     special_case = Column(Text, nullable=True)         # 특이사례 여부
-    date = Column(String, nullable=True)
-    inspection_type = Column(String, nullable=True)
+    date = Column(String, nullable=True)                ##시작 날짜
+    inspection_type = Column(String, nullable=True)     # 감사종류
+    preprocessed_text = Column(Text, nullable=True)     #원본텍스트
+
 
 
 class MapStatistic(Base):

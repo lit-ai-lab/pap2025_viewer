@@ -125,6 +125,7 @@ def load_json_to_db(json_path: Path):
             task = safe_get(item, "auto_업무")
             summary = safe_get(item, "auto_v2_summary")
             special_case = safe_get(item, "auto_특이사례", default=None)
+            preprocessed_text = safe_get(item, "preprocessed_text", default=None)
 
             viewer_entry = Viewer(
                 state=state,
@@ -137,7 +138,8 @@ def load_json_to_db(json_path: Path):
                 summary=summary,
                 special_case = special_case,
                 inspection_type=inspection_type,
-                date=date
+                date=date,
+                preprocessed_text=preprocessed_text
             )
             session.add(viewer_entry)
             inserted += 1

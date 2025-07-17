@@ -20,7 +20,7 @@ def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel
     if filters.audit_type_id is not None:
         query = query.filter(ViewerModel.disposition_request == filters.audit_type_id)
     
-    
+    # 4) 날짜 필터
     if filters.start_date and filters.end_date:
         query = query.filter(ViewerModel.date.between(filters.start_date, filters.end_date))
     elif filters.start_date:
@@ -28,25 +28,25 @@ def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel
     elif filters.end_date:
         query = query.filter(ViewerModel.date <= filters.end_date)
 
-    # 4) 분야(category) 필터
+    # 5) 분야(category) 필터
     if filters.category_id is not None:
         query = query.filter(ViewerModel.category == filters.category_id)
 
-    # 5) 업무(task) 필터
+    # 6) 업무(task) 필터
     if filters.task_id is not None:
         query = query.filter(ViewerModel.task == filters.task_id)
 
-    # 6) 키워드 검색 (summary, audit_result)
+    # 7) 키워드 검색 (summary, audit_result)
     if filters.keyword:
         kw = f"%{filters.keyword}%"
         query = query.filter(
             or_(
-                ViewerModel.summary.ilike(kw),
-                ViewerModel.audit_result.ilike(kw),
+                ViewerModel.preprocessed_text.ilike(kw),
+                
             )
         )
 
-    # 7) 특이사례 포함 여부
+    # 8) 특이사례 포함 여부
     if not filters.include_special:
         query = query.filter(ViewerModel.special_case.is_(None))
 
