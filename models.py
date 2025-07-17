@@ -35,3 +35,21 @@ class MapStatistic(Base):
     state = Column(String, index=True)
     category = Column(String, index=True)
     task = Column(String, index=True)
+    
+
+
+class DetailView(Base):
+    __tablename__ = "detail_view"
+
+    id = Column(Integer, primary_key=True, index=True)
+    inspection_agency = Column(String, nullable=True)     # 기관명
+    date = Column(String, nullable=True)                   # 감사날짜
+    audit_note = Column(Text, nullable=True)               # 감사사항
+    related_agency = Column(String, nullable=True)         # 감사대상
+    audit_result = Column(Text, nullable=True)             # 감사결과
+    category = Column(String, nullable=True)               # 분야
+    task = Column(String, nullable=True)                   # 업무
+    summary = Column(Text, nullable=True)                  # 요약
+    keyword = Column(String, nullable=True)                # 핵심키워드
+    file_size = Column(String, nullable=True)              # 파일크기
+    registration_date = Column(String, nullable=True)      # 작성일

@@ -3,7 +3,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from database import SessionLocal, engine
-from models import Base, Viewer, MapStatistic
+from models import Base, Viewer, MapStatistic, DetailView  
 # -----------------------
 # 지역 시군 매핑
 # -----------------------
@@ -103,6 +103,7 @@ print("→ Actual tables after create:", inspect(engine).get_table_names())
 def load_json_to_db(json_path: Path):
     session = SessionLocal()
     inserted = 0
+    detail_inserted = 0
 
     with json_path.open(encoding="utf-8") as f:
         raw_data = json.load(f)
@@ -143,6 +144,31 @@ def load_json_to_db(json_path: Path):
             )
             session.add(viewer_entry)
             inserted += 1
+            
+            # ========== detail_view 테이블 ==========
+            audit_note = safe_get(item, "감사사항")
+            keyword = safe_get(item, "keyword")  # keyword 필드로 가정
+            file_size = safe_get(item, "file_size")
+            registration_date = safe_get(item, "registration_date")
+
+            detail_entry = DetailView(
+                inspection_agency=inspection_agency,
+                date=date,
+                audit_note=audit_note,
+                related_agency=related_agency,
+                audit_result=audit_result,
+                category=category,
+                task=task,
+                summary=summary,
+                keyword=keyword,
+                file_size=file_size,
+                registration_date=registration_date
+            )
+            session.add(detail_entry)
+            detail_inserted += 1
+
+        print(f"✅ viewer 테이블에 {inserted}건 삽입 완료")
+        print(f"✅ detail_view 테이블에 {detail_inserted}건 삽입 완료")
             
         print(f"✅ viewer 테이블에 {inserted}건 삽입 완료")
 
