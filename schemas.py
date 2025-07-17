@@ -1,8 +1,9 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Dict
+from datetime import date
 
 # 필터용 스키마 (프론트 요청 시 사용)
-from typing import Optional
+
 
 # # 필터용 스키마 (프론트 요청 시 사용)
 # class ViewerFilter(BaseModel):
@@ -32,6 +33,24 @@ class MapStat(BaseModel):
 
     class Config:
         from_attributes = True
+        
+
+# 분야별 통계 (Top10)
+class CategoryStats(BaseModel):
+    category: str
+    count: int
+    task_count: int
+
+# /maps/overview 응답용 스키마
+class StatisticsOverview(BaseModel):
+    top10_categories: List[CategoryStats]
+    sunburst: Dict[str, Dict[str, int]]
+    
+
+class TaskStats(BaseModel):
+    task: str
+    count: int
+
 
 
 
@@ -43,3 +62,5 @@ class ViewerFilter(BaseModel):
     task_id: Optional[str] = None      # ← 이것도 사용 중이라면 같이 추가
     keyword: Optional[str] = None
     include_special: Optional[bool] = False
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None

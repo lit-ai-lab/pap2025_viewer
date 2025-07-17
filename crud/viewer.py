@@ -19,6 +19,14 @@ def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel
     # 3) 감사결과 종류 필터
     if filters.audit_type_id is not None:
         query = query.filter(ViewerModel.disposition_request == filters.audit_type_id)
+    
+    
+    if filters.start_date and filters.end_date:
+        query = query.filter(ViewerModel.date.between(filters.start_date, filters.end_date))
+    elif filters.start_date:
+        query = query.filter(ViewerModel.date >= filters.start_date)
+    elif filters.end_date:
+        query = query.filter(ViewerModel.date <= filters.end_date)
 
     # 4) 분야(category) 필터
     if filters.category_id is not None:

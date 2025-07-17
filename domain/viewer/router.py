@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from datetime import date
 import os
 
 from database import get_db
@@ -28,6 +29,8 @@ def list_viewers(
     keyword:       Optional[str] = Query(None),
     include_special: bool         = Query(False),
     db:            Session       = Depends(get_db),
+    start_date:      Optional[date] = Query(None),
+    end_date:        Optional[date] = Query(None),
 ):
     filters = ViewerFilter(
         region_id=region_id,

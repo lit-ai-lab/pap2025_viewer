@@ -47,4 +47,4 @@ if __name__ == "__main__":
 
 
 app.include_router(viewer_router, tags=["Viewer"])
-app.include_router(map_router, prefix="/maps", tags=["Map"])
+app.include_router(map_router, tags=["Map"])

@@ -5,60 +5,6 @@ from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
-class Category(Base):
-    __tablename__ = 'categorys'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-
-    # cases = relationship('Viewer', back_populates='category')
-
-class Task(Base):
-    __tablename__ = 'tasks'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-
-    # cases = relationship('Viewer', back_populates='task')
-
-class AuditType(Base):
-    __tablename__ = 'audit_types'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-
-    # cases = relationship('Viewer', back_populates='auditType')
-
-class special_case(Base):
-    __tablename__ = 'special_cases'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-
-    # cases = relationship('Viewer', back_populates='special_case')
-
-class Region(Base):
-    __tablename__ = 'regions'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-    parentId = Column(Integer, ForeignKey('regions.id'))
-    parent = relationship('Region', remote_side=[id], backref='subregions')
-
-    agencies = relationship('Agency', back_populates='region')
-    # cases = relationship('Viewer', back_populates='region')
-
-class Agency(Base):
-    __tablename__ = 'agencies'
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-    region_id = Column(Integer, ForeignKey('regions.id'), nullable=True)
-
-    region = relationship('Region', back_populates='agencies')
-    # cases = relationship('Viewer', back_populates='agency', foreign_keys='Viewer.agency_id', overlaps="relatedCases")
-    # relatedCases = relationship('Viewer', back_populates='related_agency', foreign_keys='Viewer.related_agency_id', overlaps="cases")
-
 
 
 class Viewer(Base):
