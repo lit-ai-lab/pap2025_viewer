@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Dict
 from datetime import date
 
@@ -55,12 +55,35 @@ class TaskStats(BaseModel):
 
 
 class ViewerFilter(BaseModel):
-    region_id: Optional[str] = None
-    agency_id: Optional[str] = None
-    audit_type_id: Optional[str] = None
-    category_id: Optional[str] = None  # ← 이게 없으면 추가해야 함
-    task_id: Optional[str] = None      # ← 이것도 사용 중이라면 같이 추가
-    keyword: Optional[str] = None
-    include_special: Optional[bool] = False
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
+
+    model_config = ConfigDict(
+        from_attributes=True,   # 이전 orm_mode=True
+        validate_by_name=True   # 이전 allow_population_by_field_name=True
+    )
+
+    region_id:      Optional[str]  = Field(None, alias="regionId")
+    agency_id:      Optional[str]  = Field(None, alias="agencyId")
+    audit_type_id:  Optional[str]  = Field(None, alias="auditTypeId")
+    start_date:     Optional[date] = Field(None, alias="startDate")
+    end_date:       Optional[date] = Field(None, alias="endDate")
+    category_id:    Optional[str]  = Field(None, alias="categoryId")
+    task_id:        Optional[str]  = Field(None, alias="taskId")
+    keyword:        Optional[str]  = Field(None, alias="keyword")
+    include_special: bool          = Field(False, alias="includeSpecial")
+    
+class DetailViewOut(BaseModel):
+    id: int
+    inspection_agency: Optional[str]
+    date: Optional[str]
+    audit_note: Optional[str]
+    related_agency: Optional[str]
+    audit_result: Optional[str]
+    category: Optional[str]
+    task: Optional[str]
+    summary: Optional[str]
+    keyword: Optional[str]
+    file_size: Optional[str]
+    registration_date: Optional[str]
+
+    class Config:
+        from_attributes = True

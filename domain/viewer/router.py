@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
 import os
-
+from models import DetailView
 from database import get_db
-from schemas import Viewer, ViewerFilter  # ViewerSchema → Viewer
+from schemas import Viewer, ViewerFilter,DetailViewOut  # ViewerSchema → Viewer
 from crud.viewer import (
     get_filtered_viewers,
 )
@@ -28,9 +28,10 @@ def list_viewers(
     task_id:        Optional[str] = Query(None),
     keyword:       Optional[str] = Query(None),
     include_special: bool         = Query(False),
+    start_date:      Optional[str] = Query(None),
+    end_date:        Optional[str] = Query(None),
     db:            Session       = Depends(get_db),
-    start_date:      Optional[date] = Query(None),
-    end_date:        Optional[date] = Query(None),
+    
 ):
     filters = ViewerFilter(
         region_id=region_id,
@@ -40,9 +41,17 @@ def list_viewers(
         task_id=task_id,
         keyword=keyword,
         include_special=include_special,
+        start_date=start_date,   
+        end_date=end_date, 
     )
     return get_filtered_viewers(db, filters)
 
+@router.get("/{detail_view_id}", response_model=DetailViewOut)
+def get_detail_view(detail_view_id: int, db: Session = Depends(get_db)):
+    detail = db.query(DetailView).filter(DetailView.id == detail_view_id).first()
+    if not detail:
+        raise HTTPException(status_code=404, detail="해당 상세 정보가 존재하지 않습니다.")
+    return detail
 
 
 @router.post(

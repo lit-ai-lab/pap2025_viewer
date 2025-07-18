@@ -108,12 +108,12 @@ def load_json_to_db(json_path: Path):
     with json_path.open(encoding="utf-8") as f:
         raw_data = json.load(f)
 
-    # dict 단일 객체일 경우 리스트로 처리
     if isinstance(raw_data, dict):
         raw_data = [raw_data]
 
     try:
         for item in raw_data:
+            # ---------- 공통 필드 추출 ----------
             state = resolve_state_name(item)
             inspection_agency = safe_get(item, "감사실시기관")
             inspection_type = safe_get(item, "감사종류")
@@ -125,29 +125,15 @@ def load_json_to_db(json_path: Path):
             category = safe_get(item, "auto_분야")
             task = safe_get(item, "auto_업무")
             summary = safe_get(item, "auto_v2_summary")
+            if summary and summary.strip().lower() == "na":
+                summary = "내용없음"
             special_case = safe_get(item, "auto_특이사례", default=None)
             preprocessed_text = safe_get(item, "preprocessed_text", default=None)
 
-            viewer_entry = Viewer(
-                state=state,
-                inspection_agency=inspection_agency,
-                disposition_request=disposition_request,
-                related_agency=related_agency,
-                audit_result=audit_result,
-                category=category,
-                task=task,
-                summary=summary,
-                special_case = special_case,
-                inspection_type=inspection_type,
-                date=date,
-                preprocessed_text=preprocessed_text
-            )
-            session.add(viewer_entry)
-            inserted += 1
-            
-            # ========== detail_view 테이블 ==========
+            # ---------- detail_view 먼저 insert ----------
             audit_note = safe_get(item, "감사사항")
-            keyword = safe_get(item, "keyword")  # keyword 필드로 가정
+            raw_keyword = safe_get(item, "auto_특성")
+            keyword = ", ".join(map(str, raw_keyword)) if isinstance(raw_keyword, list) else raw_keyword
             file_size = safe_get(item, "file_size")
             registration_date = safe_get(item, "registration_date")
 
@@ -165,12 +151,30 @@ def load_json_to_db(json_path: Path):
                 registration_date=registration_date
             )
             session.add(detail_entry)
+            session.flush()  # detail_view.id 확보
             detail_inserted += 1
+
+            # ---------- viewer에 detail_view_id 연결 ----------
+            viewer_entry = Viewer(
+                state=state,
+                inspection_agency=inspection_agency,
+                disposition_request=disposition_request,
+                related_agency=related_agency,
+                audit_result=audit_result,
+                category=category,
+                task=task,
+                summary=summary,
+                special_case=special_case,
+                inspection_type=inspection_type,
+                date=date,
+                preprocessed_text=preprocessed_text,
+                detail_view_id=detail_entry.id  # 연결
+            )
+            session.add(viewer_entry)
+            inserted += 1
 
         print(f"✅ viewer 테이블에 {inserted}건 삽입 완료")
         print(f"✅ detail_view 테이블에 {detail_inserted}건 삽입 완료")
-            
-        print(f"✅ viewer 테이블에 {inserted}건 삽입 완료")
 
         # ----------------------------
         # map_statistics 테이블 삽입
@@ -191,11 +195,11 @@ def load_json_to_db(json_path: Path):
                 task=task
             )
             session.add(map_entry)
-            print(f"✅ map_statistics 테이블에 {len(unique_stats)}건 삽입 완료")
 
+        print(f"✅ map_statistics 테이블에 {len(unique_stats)}건 삽입 완료")
 
         session.commit()
-        print(f"✅ {inserted}건 삽입 완료")
+        print(f"✅ 전체 {inserted}건 삽입 완료")
     except Exception as e:
         session.rollback()
         print("❌ 삽입 오류 발생:", e)

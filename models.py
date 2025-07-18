@@ -25,6 +25,8 @@ class Viewer(Base):
     date = Column(String, nullable=True)                ##시작 날짜
     inspection_type = Column(String, nullable=True)     # 감사종류
     preprocessed_text = Column(Text, nullable=True)     #원본텍스트
+    detail_view_id = Column(Integer, ForeignKey("detail_view.id"), nullable=True)
+    detail_view = relationship("DetailView")
 
 
 

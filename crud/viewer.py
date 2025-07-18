@@ -22,11 +22,15 @@ def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel
     
     # 4) 날짜 필터
     if filters.start_date and filters.end_date:
-        query = query.filter(ViewerModel.date.between(filters.start_date, filters.end_date))
+    # date 컬럼이 'YYYY-MM-DD' 문자열이면 lexicographical 비교가 날짜 비교와 동일합니다
+        query = query.filter(
+            ViewerModel.date >= filters.start_date.isoformat(),
+            ViewerModel.date <= filters.end_date.isoformat(),
+        )
     elif filters.start_date:
-        query = query.filter(ViewerModel.date >= filters.start_date)
+        query = query.filter(ViewerModel.date >= filters.start_date.isoformat())
     elif filters.end_date:
-        query = query.filter(ViewerModel.date <= filters.end_date)
+        query = query.filter(ViewerModel.date <= filters.end_date.isoformat())
 
     # 5) 분야(category) 필터
     if filters.category_id is not None:
