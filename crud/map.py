@@ -17,7 +17,12 @@ def get_top10_categories(db: Session, region: str = None):
         .limit(10)
     )
 
-    return [{"category": category, "count": count} for category, count in query.all()]
+    results = query.all()
+
+    return [
+        {"id": idx + 1, "category": category, "count": count}
+        for idx, (category, count) in enumerate(results)
+    ]
 
 
 def get_sunburst_categories_only(db: Session, region: str = None):
@@ -72,8 +77,12 @@ def get_top10_tasks_by_category(db: Session, region: str = None, category: str =
         .order_by(func.count().desc())
         .limit(10)
     )
+    results = query.all()
 
-    return [{"task": task, "count": count} for task, count in query.all()]
+    return [
+        {"id": idx + 1, "task": task, "count": count}
+        for idx, (task, count) in enumerate(results)
+    ]
 
 
 

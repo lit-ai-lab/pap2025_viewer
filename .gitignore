@@ -59,3 +59,4 @@ build/
 
 alembic/
 alembic.ini
+*.pdf

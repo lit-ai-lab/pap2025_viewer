@@ -3,6 +3,9 @@ from fastapi.responses import JSONResponse
 from domain.viewer.router import router as viewer_router
 from domain.map.router import router as map_router
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi import HTTPException
 
 app = FastAPI(title="자체감사 시스템", version="1.0")
 
@@ -13,9 +16,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers = ["Accept-Ranges"],
+    expose_headers=["Accept-Ranges"],
 )
 
+app.mount(
+    path="/static",
+    app=StaticFiles(directory="static"),
+    name="static",
+)
 
 @app.get("/")            # 루트 경로
 def read_root():
@@ -32,6 +40,14 @@ async def echo(request: Request):
     data = await request.json()
     print("받은 데이터:", data)             # 서버 콘솔에 로깅
     return {"you_sent": data}
+
+@app.get("/api/viewer/{uuid}/pdf", tags=["Viewer"])
+async def get_viewer_pdf(uuid: str):
+    file_path = f"static/pdfs/{uuid}.pdf"
+    try:
+        return FileResponse(file_path, media_type="application/pdf")
+    except Exception:
+        raise HTTPException(status_code=404, detail="PDF not found")
 
 @app.get("/api/health", summary="Health check", tags=["Health"])
 async def health_check():

@@ -11,11 +11,11 @@ from crud.map import (
 )
 
 router = APIRouter(
-    prefix="/maps",
+    prefix="/api/maps",
     tags=["Map"]
 )
 
-@router.get("/overview")
+@router.get("/overview/")
 def overview_statistics(region: Optional[str] = Query(None), db: Session = Depends(get_db)):
     """
     ✅ [1] 지역 기반 통계
@@ -30,7 +30,7 @@ def overview_statistics(region: Optional[str] = Query(None), db: Session = Depen
         "sunburst": sunburst
     }
 
-@router.get("/category-detail")
+@router.get("/overview/category_detail/")
 def detail_by_category(
     region: Optional[str] = Query(None),
     category: str = Query(...),
