@@ -1,8 +1,8 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from typing import List, Optional
 
-from models import Viewer as ViewerModel
+from models import Viewer as ViewerModel, OriginalText, DetailView
 from schemas import ViewerFilter
 
 def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel]:
@@ -18,7 +18,7 @@ def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel
 
     # 3) 감사결과 종류 필터
     if filters.audit_type_id is not None:
-        query = query.filter(ViewerModel.disposition_request == filters.audit_type_id)
+        query = query.filter(ViewerModel.inspection_type == filters.audit_type_id)
     
     # 4) 날짜 필터
     if filters.start_date and filters.end_date:
@@ -43,11 +43,11 @@ def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel
     # 7) 키워드 검색 (summary, audit_result)
     if filters.keyword:
         kw = f"%{filters.keyword}%"
-        query = query.filter(
-            or_(
-                ViewerModel.preprocessed_text.ilike(kw),
-                
-            )
+        query = (
+            query
+            .join(DetailView, ViewerModel.detail_view_id == DetailView.id)
+            .join(OriginalText, OriginalText.detail_view_id == DetailView.id)
+            .filter(OriginalText.preprocessed_text.ilike(kw))
         )
 
     # 8) 특이사례 포함 여부

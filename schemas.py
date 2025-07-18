@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Optional, List, Dict
 from datetime import date
 
@@ -30,6 +30,7 @@ class Viewer(BaseModel):
 class MapStat(BaseModel):
     region: str
     caseCount: int
+    
 
     class Config:
         from_attributes = True
@@ -67,7 +68,7 @@ class ViewerFilter(BaseModel):
 
     region_id:      Optional[str]  = Field(None, alias="regionId")
     agency_id:      Optional[str]  = Field(None, alias="agencyId")
-    audit_type_id:  Optional[str]  = Field(None, alias="auditTypeId")
+    audit_type_id:  Optional[str]  = Field(None, alias="?auditTypeId")
     start_date:     Optional[date] = Field(None, alias="startDate")
     end_date:       Optional[date] = Field(None, alias="endDate")
     category_id:    Optional[str]  = Field(None, alias="categoryId")
