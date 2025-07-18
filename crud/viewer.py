@@ -8,7 +8,7 @@ from schemas import ViewerFilter
 def get_filtered_viewers(db: Session, filters: ViewerFilter) -> List[ViewerModel]:
     query = db.query(ViewerModel)
 
-    # 1) 지역 필터 (state: ex. 전라남도)
+    # 1) 지역 필터 (state: ex. 전라남도)1
     if filters.region_id is not None:
         query = query.filter(ViewerModel.state == filters.region_id)
 

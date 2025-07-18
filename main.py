@@ -9,7 +9,7 @@ from fastapi import HTTPException
 
 app = FastAPI(title="자체감사 시스템", version="1.0")
 
-# 1) CORS 설정: React 개발 서버에서 오는 요청 허용
+# 1) CORS 설정: React 개발 서버에서 오는 요청 허용1
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # 실제 도메인으로 변경 가능

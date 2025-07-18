@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
-
+#dd
 
 class Viewer(Base):
     __tablename__ = 'viewer'
@@ -24,9 +24,9 @@ class Viewer(Base):
     special_case = Column(Text, nullable=True)         # 특이사례 여부
     date = Column(String, nullable=True)                ##시작 날짜
     inspection_type = Column(String, nullable=True)     # 감사종류
-    preprocessed_text = Column(Text, nullable=True)     #원본텍스트
     detail_view_id = Column(Integer, ForeignKey("detail_view.id"), nullable=True)
     detail_view = relationship("DetailView")
+    case_uuid = Column(Text, nullable=True)
 
 
 
@@ -55,3 +55,13 @@ class DetailView(Base):
     keyword = Column(String, nullable=True)                # 핵심키워드
     file_size = Column(String, nullable=True)              # 파일크기
     registration_date = Column(String, nullable=True)      # 작성일
+    case_uuid = Column(Text, nullable=True)
+
+class OriginalText(Base):
+    __tablename__ = "original_text"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    preprocessed_text = Column(Text, nullable=True)     #원본텍스트
+    detail_view_id = Column(Integer, ForeignKey("detail_view.id"), nullable=True)   #detail.view아이디
+    detail_view = relationship("DetailView")
+    

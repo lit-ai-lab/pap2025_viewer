@@ -37,7 +37,7 @@ def detail_by_category(
     db: Session = Depends(get_db)
 ):
     """
-    ✅ [2] 선택된 분야(category)에 대한 업무 top10 + sunburst
+    ✅ [2] 선택된 분야(category)에 대한 업무 top10 + sunburst1
     """
     top10_tasks = get_top10_tasks_by_category(db, region, category)
     sunburst = get_sunburst_task_detail(db, region, category)

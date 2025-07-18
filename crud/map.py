@@ -3,7 +3,7 @@ from sqlalchemy import func
 from models import Viewer
 from collections import defaultdict
 
-# ✅ [1] 지역 기반: 분야 Top10 + 분야별 count만 sunburst
+# ✅ [1] 지역 기반: 분야 Top10 + 분야별 count만 sunburst1
 def get_top10_categories(db: Session, region: str = None):
     query = db.query(Viewer.category, func.count().label("count"))
 

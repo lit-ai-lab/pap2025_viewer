@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Dict
 from datetime import date
 
-# 필터용 스키마 (프론트 요청 시 사용)
+# 필터용 스키마 (프론트 요청 시 사용)1
 
 
 # # 필터용 스키마 (프론트 요청 시 사용)

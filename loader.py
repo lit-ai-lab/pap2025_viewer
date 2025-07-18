@@ -3,9 +3,9 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from database import SessionLocal, engine
-from models import Base, Viewer, MapStatistic, DetailView  
+from models import Base, Viewer, MapStatistic, DetailView, OriginalText
 # -----------------------
-# 지역 시군 매핑
+# 지역 시군 매핑q
 # -----------------------
 REGION_CITY_MAP = {
     "경기": {
@@ -129,6 +129,7 @@ def load_json_to_db(json_path: Path):
                 summary = "내용없음"
             special_case = safe_get(item, "auto_특이사례", default=None)
             preprocessed_text = safe_get(item, "preprocessed_text", default=None)
+            case_uuid = safe_get(item, "case_uuid")
 
             # ---------- detail_view 먼저 insert ----------
             audit_note = safe_get(item, "감사사항")
@@ -148,7 +149,8 @@ def load_json_to_db(json_path: Path):
                 summary=summary,
                 keyword=keyword,
                 file_size=file_size,
-                registration_date=registration_date
+                registration_date=registration_date,
+                case_uuid=case_uuid
             )
             session.add(detail_entry)
             session.flush()  # detail_view.id 확보
@@ -167,11 +169,17 @@ def load_json_to_db(json_path: Path):
                 special_case=special_case,
                 inspection_type=inspection_type,
                 date=date,
-                preprocessed_text=preprocessed_text,
-                detail_view_id=detail_entry.id  # 연결
+                detail_view_id=detail_entry.id,  # 연결
+                case_uuid=case_uuid
             )
             session.add(viewer_entry)
             inserted += 1
+            
+            original_text_entry = OriginalText(
+                preprocessed_text=preprocessed_text,
+                detail_view_id=detail_entry.id
+            )
+            session.add(original_text_entry)
 
         print(f"✅ viewer 테이블에 {inserted}건 삽입 완료")
         print(f"✅ detail_view 테이블에 {detail_inserted}건 삽입 완료")
