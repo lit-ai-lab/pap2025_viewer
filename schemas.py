@@ -40,18 +40,22 @@ class CategoryStats(BaseModel):
     category: str
     count: int
     task_count: int
+    
+    
+class Sunburst(BaseModel):
+    labels: List[str]
+    parents: List[str]
+    values: List[int]
 
 # /maps/overview 응답용 스키마
 class StatisticsOverview(BaseModel):
     top10_categories: List[CategoryStats]
-    sunburst: Dict[str, Dict[str, int]]
+    sunburst: Sunburst
     
 
 class TaskStats(BaseModel):
     task: str
     count: int
-
-
 
 
 class ViewerFilter(BaseModel):

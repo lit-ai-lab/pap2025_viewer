@@ -46,7 +46,7 @@ def list_viewers(
     )
     return get_filtered_viewers(db, filters)
 
-@router.get("/{detail_view_id}", response_model=DetailViewOut)
+@router.get("/{detail_view_id}", response_model=DetailViewOut,summary="상세보기 -> 분석탭 조회",)
 def get_detail_view(detail_view_id: int, db: Session = Depends(get_db)):
     detail = db.query(DetailView).filter(DetailView.id == detail_view_id).first()
     if not detail:

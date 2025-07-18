@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from models import Viewer
-from schemas import MapStat
 from sqlalchemy import func
-from typing import List
+from models import Viewer
+from collections import defaultdict
 
-def get_top10_categories_with_task_count(db: Session, region: str = None):
+# ✅ [1] 지역 기반: 분야 Top10 + 분야별 count만 sunburst
+def get_top10_categories(db: Session, region: str = None):
     query = db.query(Viewer.category, func.count().label("count"))
 
     if region:
@@ -17,48 +17,44 @@ def get_top10_categories_with_task_count(db: Session, region: str = None):
         .limit(10)
     )
 
-    category_counts = query.all()
-
-    result = []
-    for category, count in category_counts:
-        task_count_query = db.query(func.count(func.distinct(Viewer.task))).filter(Viewer.category == category)
-        if region:
-            task_count_query = task_count_query.filter(Viewer.state.contains(region))
-        task_count = task_count_query.scalar()
-
-        result.append({
-            "category": category,
-            "count": count,
-            "task_count": task_count
-        })
-
-    return result
+    return [{"category": category, "count": count} for category, count in query.all()]
 
 
-def get_sunburst_data(db: Session, region: str = None):
-    query = db.query(Viewer.category, Viewer.task)
+def get_sunburst_categories_only(db: Session, region: str = None):
+    """
+    분야 Top10만 포함된 sunburst용 데이터
+    """
+    query = db.query(Viewer.category, func.count().label("count"))
 
     if region:
         query = query.filter(Viewer.state.contains(region))
 
-    query = query.filter(
-        Viewer.category.isnot(None),
-        Viewer.task.isnot(None)
+    query = (
+        query.filter(Viewer.category.isnot(None))
+        .group_by(Viewer.category)
+        .order_by(func.count().desc())
+        .limit(10)
     )
 
-    rows = query.all()
+    results = query.all()
 
-    from collections import defaultdict
+    labels = ["전국"]
+    parents = [""]
+    values = [0]  # root node (전국)
 
-    tree = defaultdict(lambda: defaultdict(int))
+    for category, count in results:
+        labels.append(category)
+        parents.append("전국")
+        values.append(count)
 
-    for category, task in rows:
-        tree[category][task] += 1  # task를 그대로 key로 사용
-    return tree
+    return {
+        "labels": labels,
+        "parents": parents,
+        "values": values
+    }
 
 
-
-
+# ✅ [2] 분야 선택 시: 업무 Top10 + sunburst(task 포함)
 def get_top10_tasks_by_category(db: Session, region: str = None, category: str = None):
     if not category:
         return []
@@ -71,11 +67,49 @@ def get_top10_tasks_by_category(db: Session, region: str = None, category: str =
     if region:
         query = query.filter(Viewer.state.contains(region))
 
-    result = (
+    query = (
+        query.group_by(Viewer.task)
+        .order_by(func.count().desc())
+        .limit(10)
+    )
+
+    return [{"task": task, "count": count} for task, count in query.all()]
+
+
+
+def get_sunburst_task_detail(db: Session, region: str = None, category: str = None):
+    """
+    선택된 분야에 대해: 분야(root) → 업무(task) Top10 → count
+    """
+    if not category:
+        return {"labels": [], "parents": [], "values": []}
+
+    query = db.query(Viewer.task, func.count().label("count")).filter(
+        Viewer.category == category,
+        Viewer.task.isnot(None)
+    )
+
+    if region:
+        query = query.filter(Viewer.state.contains(region))
+
+    results = (
         query.group_by(Viewer.task)
         .order_by(func.count().desc())
         .limit(10)
         .all()
     )
 
-    return [{"task": task, "count": count} for task, count in result]
+    labels = [category]
+    parents = [""]
+    values = [0]  # root 노드 (category)
+
+    for task, count in results:
+        labels.append(task)
+        parents.append(category)
+        values.append(count)
+
+    return {
+        "labels": labels,
+        "parents": parents,
+        "values": values
+    }
