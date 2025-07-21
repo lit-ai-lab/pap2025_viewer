@@ -129,7 +129,7 @@ def load_json_to_db(json_path: Path):
                 summary = "내용없음"
             special_case = safe_get(item, "auto_특이사례", default=None)
             preprocessed_text = safe_get(item, "preprocessed_text", default=None)
-            case_uuid = safe_get(item, "case_uuid")
+            file_hash = safe_get(item, "file_hash")
 
             # ---------- detail_view 먼저 insert ----------
             audit_note = safe_get(item, "감사사항")
@@ -150,7 +150,7 @@ def load_json_to_db(json_path: Path):
                 keyword=keyword,
                 file_size=file_size,
                 registration_date=registration_date,
-                case_uuid=case_uuid
+                file_hash=file_hash
             )
             session.add(detail_entry)
             session.flush()  # detail_view.id 확보
@@ -170,7 +170,7 @@ def load_json_to_db(json_path: Path):
                 inspection_type=inspection_type,
                 date=date,
                 detail_view_id=detail_entry.id,  # 연결
-                case_uuid=case_uuid
+                file_hash=file_hash,
             )
             session.add(viewer_entry)
             inserted += 1

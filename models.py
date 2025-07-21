@@ -26,7 +26,7 @@ class Viewer(Base):
     inspection_type = Column(String, nullable=True)     # 감사종류
     detail_view_id = Column(Integer, ForeignKey("detail_view.id"), nullable=True)
     detail_view = relationship("DetailView")
-    case_uuid = Column(Text, nullable=True)
+    file_hash = Column(Text, nullable=True)
 
 
 
@@ -55,7 +55,7 @@ class DetailView(Base):
     keyword = Column(String, nullable=True)                # 핵심키워드
     file_size = Column(String, nullable=True)              # 파일크기
     registration_date = Column(String, nullable=True)      # 작성일
-    case_uuid = Column(Text, nullable=True)
+    file_hash = Column(Text, nullable=True)
 
 class OriginalText(Base):
     __tablename__ = "original_text"
