@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from models import Viewer
 from collections import defaultdict
-
+import re
 
 
 # def get_category_task_summary(db: Session, region: str = None):
@@ -72,10 +72,16 @@ def get_category_task_summary(db: Session, region: str = None):
     task_global_id = 1  # 전체 task에 대해 id 연속 증가
 
     # [2] 각 분야별 task 포함
-    for cat_idx, (category, category_count) in enumerate(top10_categories_result):
+    for cat_idx, (category_full, category_count) in enumerate(top10_categories_result):
+        # ✅ 앞 숫자 제거 (예: "04 계약" → "계약")
+        if " " in category_full:
+            _, category_name = category_full.split(" ", 1)
+        else:
+            category_name = category_full
+            
         # 분야별 업무 top10 조회
         task_query = db.query(Viewer.task, func.count().label("count")).filter(
-            Viewer.category == category,
+            Viewer.category == category_full,
             Viewer.task.isnot(None)
         )
         if region:
@@ -100,7 +106,7 @@ def get_category_task_summary(db: Session, region: str = None):
         # 하나의 카테고리 블록
         categories_output.append({
             "id": cat_idx + 1,
-            "category": category,
+            "category": category_name,
             "count": category_count,
             "tasks": tasks_output
         })
