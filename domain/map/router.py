@@ -31,7 +31,7 @@ def simplify_region_name(region: Optional[str]) -> Optional[str]:
         "강원특별자치도": "강원",
         "충청북도": "충청북도",
         "충청남도": "충청남도",
-        "전라북도": "전북",
+        "전북특별자치도": "전북",
         "전라남도": "전라남도",
         "경상북도": "경상북도",
         "경상남도": "경상남도",
@@ -40,6 +40,7 @@ def simplify_region_name(region: Optional[str]) -> Optional[str]:
     return replacements.get(region, region)
 
 
-@router.get("/summary")
+@router.get("/overview/")
 def get_summary(region: str = None, db: Session = Depends(get_db)):
+    region = simplify_region_name(region)
     return get_category_task_summary(db, region)
