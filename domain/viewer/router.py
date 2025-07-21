@@ -10,7 +10,7 @@ from schemas import Viewer, ViewerFilter,DetailViewOut  # ViewerSchema → Viewe
 from crud.viewer import (
     get_filtered_viewers,
 )
-from utils.excel import generate_excel_file
+
 
 router = APIRouter(prefix="/api/viewer", tags=["Viewer"])
 
@@ -27,7 +27,7 @@ def list_viewers(
     category_id:    Optional[str] = Query(None, alias="categoryId"),
     task_id:        Optional[str] = Query(None, alias="taskId"),
     keyword:       Optional[str] = Query(None, alias="keyword"),
-    include_special: bool         = Query(False, alias="includeSpecial"),
+    include_special: Optional[bool] = Query(False, alias="includeSpecial"),
     start_date:      Optional[str] = Query(None, alias="startDate"),
     end_date:        Optional[str] = Query(None, alias="endDate"),
     db:            Session       = Depends(get_db),

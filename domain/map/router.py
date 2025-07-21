@@ -4,10 +4,10 @@ from typing import Optional
 
 from database import get_db
 from crud.map import (
-    get_top10_categories,
-    get_sunburst_categories_only,
-    get_top10_tasks_by_category,
-    get_sunburst_task_detail
+    # get_top10_categories,
+    # get_sunburst_categories_only,
+    # get_top10_tasks_by_category,
+    get_category_task_summary
 )
 
 router = APIRouter(
@@ -31,7 +31,7 @@ def simplify_region_name(region: Optional[str]) -> Optional[str]:
         "강원특별자치도": "강원",
         "충청북도": "충청북도",
         "충청남도": "충청남도",
-        "전라북도": "전북",
+        "전북특별자치도": "전북",
         "전라남도": "전라남도",
         "경상북도": "경상북도",
         "경상남도": "경상남도",
@@ -39,36 +39,8 @@ def simplify_region_name(region: Optional[str]) -> Optional[str]:
     }
     return replacements.get(region, region)
 
+
 @router.get("/overview/")
-def overview_statistics(region: Optional[str] = Query(None), db: Session = Depends(get_db)):
-    """
-    ✅ [1] 지역 기반 통계
-    - 분야 Top10 리스트
-    - sunburst: 분야만 포함
-    """
+def get_summary(region: str = None, db: Session = Depends(get_db)):
     region = simplify_region_name(region)
-    top10_categories = get_top10_categories(db, region)
-    sunburst = get_sunburst_categories_only(db, region)
-
-    return {
-        "top10_categories": top10_categories,
-        "sunburst": sunburst
-    }
-
-@router.get("/overview/category_detail/")
-def detail_by_category(
-    region: Optional[str] = Query(None),
-    category: str = Query(...),
-    db: Session = Depends(get_db)
-):
-    """
-    ✅ [2] 선택된 분야(category)에 대한 업무 top10 + sunburst1
-    """
-    region = simplify_region_name(region)
-    top10_tasks = get_top10_tasks_by_category(db, region, category)
-    sunburst = get_sunburst_task_detail(db, region, category)
-
-    return {
-        "top10_tasks": top10_tasks,
-        "sunburst": sunburst
-    }
+    return get_category_task_summary(db, region)
