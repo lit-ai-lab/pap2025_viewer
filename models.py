@@ -25,7 +25,7 @@ class Viewer(Base):
     date = Column(String, nullable=True)                ##시작 날짜
     inspection_type = Column(String, nullable=True)     # 감사종류
     detail_view_id = Column(Integer, ForeignKey("detail_view.id"), nullable=True)
-    detail_view = relationship("DetailView")
+    detail_view = relationship("DetailView", back_populates="viewers")
     file_hash = Column(Text, nullable=True)
 
 
@@ -56,6 +56,9 @@ class DetailView(Base):
     file_size = Column(String, nullable=True)              # 파일크기
     registration_date = Column(String, nullable=True)      # 작성일
     file_hash = Column(Text, nullable=True)
+    
+    viewers   = relationship("Viewer",       back_populates="detail_view")
+    originals = relationship("OriginalText", back_populates="detail_view")
 
 class OriginalText(Base):
     __tablename__ = "original_text"
@@ -63,5 +66,5 @@ class OriginalText(Base):
     id = Column(Integer, primary_key=True, index=True)
     preprocessed_text = Column(Text, nullable=True)     #원본텍스트
     detail_view_id = Column(Integer, ForeignKey("detail_view.id"), nullable=True)   #detail.view아이디
-    detail_view = relationship("DetailView")
+    detail_view       = relationship("DetailView", back_populates="originals")
     

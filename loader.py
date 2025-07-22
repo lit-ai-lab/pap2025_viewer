@@ -63,8 +63,18 @@ KEYWORD_REGIONS = [
 # -----------------------
 
 def safe_get(item: dict, key: str, default=None):
+    """
+    JSON 에서 키를 추출한 뒤,
+    - 빈 문자열/None은 default 로
+    - 문자열에 NUL(0x00)이 있으면 모두 제거
+    """
     val = item.get(key, default)
-    return val if val and str(val).strip() else default
+    if not val or not str(val).strip():
+        return default
+    if isinstance(val, str):
+        # NUL 문자 제거
+        val = val.replace("\x00", "")
+    return val
 
 def resolve_state_name(entry: dict) -> str | None:
     agency_val = entry.get("감사실시기관", "")
@@ -104,6 +114,7 @@ def load_json_to_db(json_path: Path):
     session = SessionLocal()
     inserted = 0
     detail_inserted = 0
+    BATCH_SIZE = 1000
 
     with json_path.open(encoding="utf-8") as f:
         raw_data = json.load(f)
@@ -152,9 +163,7 @@ def load_json_to_db(json_path: Path):
                 registration_date=registration_date,
                 file_hash=file_hash
             )
-            session.add(detail_entry)
-            session.flush()  # detail_view.id 확보
-            detail_inserted += 1
+            
 
             # ---------- viewer에 detail_view_id 연결 ----------
             viewer_entry = Viewer(
@@ -172,15 +181,21 @@ def load_json_to_db(json_path: Path):
                 detail_view_id=detail_entry.id,  # 연결
                 file_hash=file_hash,
             )
-            session.add(viewer_entry)
-            inserted += 1
+            
             
             original_text_entry = OriginalText(
                 preprocessed_text=preprocessed_text,
                 detail_view_id=detail_entry.id
             )
-            session.add(original_text_entry)
+            session.add_all([detail_entry, viewer_entry, original_text_entry])
+            inserted += 1
+            detail_inserted += 1
+            
+            if inserted % BATCH_SIZE == 0:
+                session.commit()
+                print(f"  → {inserted}건 커밋 완료")
 
+        session.commit()
         print(f"✅ viewer 테이블에 {inserted}건 삽입 완료")
         print(f"✅ detail_view 테이블에 {detail_inserted}건 삽입 완료")
 
