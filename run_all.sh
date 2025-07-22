@@ -14,7 +14,7 @@ echo "⚙️ npm run build 실행 중..."
 npm run build
 
 # 빌드 완료 후 루트로 돌아감
-#cd ../..
+cd ../..
 
 echo "🚀 FastAPI 서버 시작 (포트 8000)"
 uvicorn main:app --host 0.0.0.0 --port 8000 
