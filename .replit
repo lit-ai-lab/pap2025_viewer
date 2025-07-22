@@ -5,29 +5,7 @@ modules = ["nodejs-20", "python-3.11", "postgresql-16"]
 
 
 [nix]
-packages = [
-  "cairo",
-  "chromedriver",
-  "ffmpeg-full",
-  "freetype",
-  "ghostscript",
-  "glibcLocales",
-  "gobject-introspection",
-  "gtk3",
-  "lcms2",
-  "libcxx",
-  "libimagequant",
-  "libjpeg",
-  "libtiff",
-  "libwebp",
-  "libxcrypt",
-  "openjpeg",
-  "pkg-config",
-  "qhull",
-  "tcl",
-  "tk",
-  "zlib",
-]
+packages = ["cairo", "chromedriver", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "lcms2", "libcxx", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "pkg-config", "qhull", "tcl", "tk", "zlib"]
 
 #[[ports]]
 #localPort = 5173
