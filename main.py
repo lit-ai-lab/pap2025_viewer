@@ -45,15 +45,13 @@ def healthcheck():
     return {"status": "OK", "timestamp": datetime.utcnow().isoformat() + "Z"}
 
 
-# React 정적 빌드 파일 서빙 (only if directory exists)
+# Mount static files from the frontend build
 if os.path.exists("frontend/FE/dist"):
-    app.mount("/app",
-              StaticFiles(directory="frontend/FE/dist", html=True),
-              name="frontend")
+    app.mount("/static", StaticFiles(directory="frontend/FE/dist"), name="static")
 
 # ✅ 정적 PDF 등 (only if directory exists)
 if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    app.mount("/files", StaticFiles(directory="static"), name="files")
 
 
 # PDF 다운로드 API
@@ -63,6 +61,19 @@ async def get_viewer_pdf(uuid: str):
     if not os.path.isfile(file_path):
         raise HTTPException(status_code=404, detail="PDF not found")
     return FileResponse(file_path, media_type="application/pdf")
+
+# Catch-all route to serve React app for client-side routing
+@app.get("/{path:path}")
+async def serve_spa(path: str):
+    """Serve React app for all routes that don't match API endpoints"""
+    # Skip API routes and static files
+    if path.startswith("api/") or path.startswith("static/") or path.startswith("files/"):
+        raise HTTPException(status_code=404, detail="Not found")
+    
+    index_path = os.path.join("frontend/FE/dist", "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"error": "Frontend not built"}
 
 
 # 개발용 실행
