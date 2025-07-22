@@ -7,14 +7,13 @@ modules = ["nodejs-20", "python-3.11", "postgresql-16"]
 [nix]
 packages = ["cairo", "chromedriver", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "lcms2", "libcxx", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "pkg-config", "qhull", "tcl", "tk", "zlib"]
 
-[[ports]]
-localPort = 5173
-externalPort = 80
+#[[ports]]
+#localPort = 5173
+#externalPort = 80
 
 [[ports]]
 localPort = 8000
-externalPort = 8000
+externalPort = 80
 
 [deployment]
 run = "bash run_all.sh"
-healthcheckPath = "/"

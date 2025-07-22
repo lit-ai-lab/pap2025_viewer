@@ -1,14 +1,6 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator
-from typing import Optional, List, Dict
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, List
 from datetime import date
-
-# 필터용 스키마 (프론트 요청 시 사용)1
-
-# # 필터용 스키마 (프론트 요청 시 사용)
-# class ViewerFilter(BaseModel):
-#     region_id: Optional[str] = None  # 지역명 텍스트
-#     agency_id: Optional[str] = None  # 감사실시기관 텍스트
-#     audit_type_id: Optional[str] = None  # 감사결과종류 텍스트
 
 
 # 단일 조회 시 응답
@@ -24,16 +16,14 @@ class Viewer(BaseModel):
     summary: Optional[str]
     special_case: Optional[str]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MapStat(BaseModel):
     region: str
     caseCount: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # 분야별 통계 (Top10)
@@ -61,15 +51,11 @@ class TaskStats(BaseModel):
 
 
 class ViewerFilter(BaseModel):
-
-    model_config = ConfigDict(
-        from_attributes=True,  # 이전 orm_mode=True
-        validate_by_name=True  # 이전 allow_population_by_field_name=True
-    )
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
     region_id: Optional[str] = Field(None, alias="regionId")
     agency_id: Optional[str] = Field(None, alias="agencyId")
-    audit_type_id: Optional[str] = Field(None, alias="?auditTypeId")
+    audit_type_id: Optional[str] = Field(None, alias="auditTypeId")  # ✅ 오타 수정
     start_date: Optional[date] = Field(None, alias="startDate")
     end_date: Optional[date] = Field(None, alias="endDate")
     category_id: Optional[str] = Field(None, alias="categoryId")
@@ -92,5 +78,4 @@ class DetailViewOut(BaseModel):
     file_size: Optional[str]
     registration_date: Optional[str]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -77,6 +77,7 @@ const App = () => {
     selectedStateId: "",
   });
 
+  console.log("📦 App 컴포넌트 렌더링");
   const navigateTo = (page, data = null) => {
     setCurrentPage(page);
     if (page === "details") setSelectedData(data);
