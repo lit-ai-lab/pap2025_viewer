@@ -24,23 +24,20 @@ app.add_middleware(
 app.include_router(viewer_router, prefix="/api/viewer", tags=["Viewer"])
 app.include_router(map_router, prefix="/api/map", tags=["Map"])
 
-# React 정적 빌드 파일 서빙
-app.mount("/",
-          StaticFiles(directory="frontend/FE/dist", html=False),
-          name="frontend")
-
+# 헬스체크 전용 엔드포인트 (루트 경로)
+@app.get("/", include_in_schema=False)
+def root_healthcheck():
+    return {"status": "OK", "timestamp": datetime.utcnow().isoformat() + "Z"}
 
 # 헬스체크 전용 엔드포인트
 @app.get("/health", include_in_schema=False)
 def healthcheck():
     return {"status": "OK", "timestamp": datetime.utcnow().isoformat() + "Z"}
 
-
-@app.get("/")
-def serve_root():
-    print("Serving index.html")
-    index_path = os.path.join("frontend/FE/dist", "index.html")
-    return FileResponse(index_path)
+# React 정적 빌드 파일 서빙
+app.mount("/app",
+          StaticFiles(directory="frontend/FE/dist", html=True),
+          name="frontend")
 
 
 # ✅ 정적 PDF 등

@@ -17,4 +17,4 @@
 #cd ../..
 
 echo "🚀 FastAPI 서버 시작 (포트 8000)"
-uvicorn main:app --host 0.0.0.0 
+uvicorn main:app --host 0.0.0.0 --port 8000 
