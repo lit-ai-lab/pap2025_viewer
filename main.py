@@ -47,6 +47,7 @@ def healthcheck():
 
 # Mount static files from the frontend build
 if os.path.exists("frontend/FE/dist"):
+    app.mount("/assets", StaticFiles(directory="frontend/FE/dist/assets"), name="assets")
     app.mount("/static", StaticFiles(directory="frontend/FE/dist"), name="static")
 
 # ✅ 정적 PDF 등 (only if directory exists)
