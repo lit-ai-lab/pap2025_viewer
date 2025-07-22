@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date
@@ -31,7 +30,7 @@ def list_viewers(
     start_date:      Optional[str] = Query(None, alias="startDate"),
     end_date:        Optional[str] = Query(None, alias="endDate"),
     db:            Session       = Depends(get_db),
-    
+
 ):
     filters = ViewerFilter(
         region_id=region_id,
@@ -53,3 +52,42 @@ def get_detail_view(detail_view_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="해당 상세 정보가 존재하지 않습니다.")
     return detail
 
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+from database import get_db
+from .service import ViewerService
+from schemas import ViewerFilter, DetailViewOut
+from typing import Optional, List
+
+router = APIRouter()
+
+@router.get("/")
+async def get_viewers(
+    regionId: Optional[str] = None,
+    agencyId: Optional[str] = None,
+    auditTypeId: Optional[str] = None,
+    startDate: Optional[str] = None,
+    endDate: Optional[str] = None,
+    categoryId: Optional[str] = None,
+    taskId: Optional[str] = None,
+    keyword: Optional[str] = None,
+    includeSpecial: bool = False,
+    db: Session = Depends(get_db)
+):
+    """Get filtered viewer data"""
+    try:
+        service = ViewerService(db)
+        filters = ViewerFilter(
+            regionId=regionId,
+            agencyId=agencyId,
+            auditTypeId=auditTypeId,
+            startDate=startDate,
+            endDate=endDate,
+            categoryId=categoryId,
+            taskId=taskId,
+            keyword=keyword,
+            includeSpecial=includeSpecial
+        )
+        return service.get_filtered_data(filters)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
