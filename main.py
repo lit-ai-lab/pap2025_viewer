@@ -27,9 +27,16 @@ app.include_router(map_router, prefix="/api/map", tags=["Map"])
 
 @app.get("/")
 def serve_root():
-    print("Serving index.html")
+    """Health check endpoint for deployment"""
+    return {"status": "healthy", "message": "FastAPI server is running"}
+
+@app.get("/app")
+def serve_app():
+    """Serve the React app if files exist"""
     index_path = os.path.join("frontend/FE/dist", "index.html")
-    return FileResponse(index_path)
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"error": "Frontend not built"}
 
 
 # 헬스체크 전용 엔드포인트
@@ -38,13 +45,15 @@ def healthcheck():
     return {"status": "OK", "timestamp": datetime.utcnow().isoformat() + "Z"}
 
 
-# React 정적 빌드 파일 서빙
-app.mount("/app",
-          StaticFiles(directory="frontend/FE/dist", html=True),
-          name="frontend")
+# React 정적 빌드 파일 서빙 (only if directory exists)
+if os.path.exists("frontend/FE/dist"):
+    app.mount("/app",
+              StaticFiles(directory="frontend/FE/dist", html=True),
+              name="frontend")
 
-# ✅ 정적 PDF 등
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# ✅ 정적 PDF 등 (only if directory exists)
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # PDF 다운로드 API
