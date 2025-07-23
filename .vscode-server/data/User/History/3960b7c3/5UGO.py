@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # DATABASE_URL: str
-    DATABASE_URL: str ="sqlite:///./gamsa.db"
+    DATABASE_URL="sqlite:///./gamsa.db"
     # class Config:
     #     env_file = ".env"
     #     env_file_encoding = "utf-8"

@@ -5,7 +5,6 @@ from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
-# base=deteractive_base
 #dd
 
 class Viewer(Base):

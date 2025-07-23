@@ -3,7 +3,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from database import SessionLocal, engine
-from models import Base, Viewer, MapStatistic, DetailView, OriginalText, MetaData
+from models import Base, Viewer, MapStatistic, DetailView, OriginalText
 # -----------------------
 # 지역 시군 매핑q
 # -----------------------

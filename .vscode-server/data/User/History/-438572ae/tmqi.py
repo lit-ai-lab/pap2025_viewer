@@ -3,7 +3,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from database import SessionLocal, engine
-from models import Base, Viewer, MapStatistic, DetailView, OriginalText, MetaData
+from models import Base, Viewer, MapStatistic, DetailView, OriginalText
 # -----------------------
 # 지역 시군 매핑q
 # -----------------------
@@ -180,6 +180,7 @@ def load_json_to_db(json_path: Path):
                 special_case=special_case,
                 inspection_type=inspection_type,
                 date=date,
+                case_uuid=case_uuid,
                 detail_view_id=detail_entry.id,  # 연결
                 file_hash=file_hash,
             )
@@ -189,14 +190,7 @@ def load_json_to_db(json_path: Path):
                 preprocessed_text=preprocessed_text,
                 detail_view_id=detail_entry.id
             )
-            # metadata 삽입 feat.daon
-            metadata_entry = MetaData(
-                inspection_agency=inspection_agency,
-                related_agency=related_agency,
-                audit_note=audit_note,
-                case_uuid=case_uuid
-            )
-            session.add_all([detail_entry, viewer_entry, original_text_entry, metadata_entry])
+            session.add_all([detail_entry, viewer_entry, original_text_entry])
             inserted += 1
             detail_inserted += 1
             

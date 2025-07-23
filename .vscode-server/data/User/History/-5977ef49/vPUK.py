@@ -83,6 +83,3 @@ class DetailViewOut(BaseModel):
 #홈 메타데이터 feat.daon
 class MetaData(BaseModel):
     inspection_agency_count: int
-    related_agency_count: int
-    audit_note_count: int
-    case_uuid_count: int

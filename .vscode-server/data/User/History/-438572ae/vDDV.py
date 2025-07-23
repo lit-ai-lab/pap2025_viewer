@@ -3,7 +3,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from database import SessionLocal, engine
-from models import Base, Viewer, MapStatistic, DetailView, OriginalText, MetaData
+from models import Base, Viewer, MapStatistic, DetailView, OriginalText
 # -----------------------
 # 지역 시군 매핑q
 # -----------------------
@@ -180,6 +180,7 @@ def load_json_to_db(json_path: Path):
                 special_case=special_case,
                 inspection_type=inspection_type,
                 date=date,
+                case_uuid=case_uuid,
                 detail_view_id=detail_entry.id,  # 연결
                 file_hash=file_hash,
             )

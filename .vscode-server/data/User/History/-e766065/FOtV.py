@@ -5,7 +5,6 @@ from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
-# base=deteractive_base
 #dd
 
 class Viewer(Base):
@@ -72,7 +71,6 @@ class OriginalText(Base):
 class MetaData(Base):
     __tablename__ = "metadata"
 
-    id = Column(Integer, primary_key=True)
     inspection_agency = Column(String, nullable=True)
     related_agency = Column(String, nullable=True)
     audit_note = Column(Text, nullable=True)
