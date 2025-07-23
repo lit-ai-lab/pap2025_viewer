@@ -130,7 +130,10 @@ def load_json_to_db(json_path: Path):
             inspection_type = safe_get(item, "감사종류")
             raw_date = safe_get(item, "감사기간")
             date = extract_start_date(raw_date) if raw_date else None
-            audit_result = safe_get(item, "처분요구 및 조치사항")            
+            audit_result = safe_get(item, "처분요구 및 조치사항")  
+            # 변경: audit_result가 '모범사례'인 경우 해당 항목을 건너뜁니다.
+            if audit_result == "모범사례":
+                continue          
             related_agency = safe_get(item, "관련기관")
             disposition_request = safe_get(item, "감사결과종류")
             category = safe_get(item, "auto_분야")

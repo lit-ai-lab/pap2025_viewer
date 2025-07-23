@@ -23,7 +23,7 @@ app.add_middleware(
 
 # API 라우터 등록
 app.include_router(viewer_router, prefix="/api/viewer", tags=["Viewer"])
-app.include_router(map_router, prefix="/api/map", tags=["Map"])
+app.include_router(map_router, prefix="/api/maps", tags=["Map"])
 app.include_router(metadata_router, prefix="/api", tags=["Metadata"])
 
 #app.mount("/",StaticFiles(directory="frontend/FE/dist", html=True),name="frontend")
