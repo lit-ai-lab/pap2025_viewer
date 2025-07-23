@@ -1068,7 +1068,7 @@ const MapPage = ({
     setError(null);
     try {
       const query = korRegion ? `?region=${encodeURIComponent(korRegion)}` : "";
-      const res = await fetch(`/api/maps/overview/${query}`);
+      const res = await fetch(`/api/map/overview/${query}`);
       if (!res.ok) throw new Error("데이터 요청 실패");
       const result = await res.json();
       setCategoryData(result.categories || []);

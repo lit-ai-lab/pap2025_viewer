@@ -1,6 +1,6 @@
 language = "python"
 entrypoint = "main.py"
-run = "bash run_all.sh"
+run = "exec uvicorn main:app --host 0.0.0.0 --port 8000 --keep-alive 30 --timeout-keep-alive 60"
 modules = ["nodejs-20", "python-3.11", "postgresql-16"]
 
 
@@ -18,3 +18,4 @@ externalPort = 80
 [deployment]
 build = ["sh", "-c", "cd frontend/FE && npm install && npm run build"]
 run = ["sh", "-c", "bash run_all.sh"]
+deploymentTarget = "cloudrun"

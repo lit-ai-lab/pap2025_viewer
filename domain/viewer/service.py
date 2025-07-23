@@ -22,7 +22,7 @@ class ViewerService:
         if filters.audit_type_id:
             query = query.filter(Viewer.audit_type.ilike(f"%{filters.audit_type_id}%"))
             
-        if filters.start_date:
+        if filters.start_date :
             query = query.filter(Viewer.date >= filters.start_date)
             
         if filters.end_date:

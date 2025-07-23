@@ -226,8 +226,6 @@
 //   // 버튼용 도시 리스트
 //   const cityList = Object.keys(regionNameMap);
 
-
-
 //   return (
 //     <div style={{ padding: '24px', fontFamily: 'sans-serif' }}>
 //       {/* 선택된 도시명 */}
@@ -318,34 +316,34 @@
 
 //.svg-map__location--selected { fill: #2563eb; }
 
-import { useState, useEffect } from 'react';
-import { SVGMap } from 'react-svg-map';
-import 'react-svg-map/lib/index.css';
-import southKorea from '@svg-maps/south-korea';
+import { useState, useEffect } from "react";
+import { SVGMap } from "react-svg-map";
+import "react-svg-map/lib/index.css";
+import southKorea from "@svg-maps/south-korea";
 
 // 영어 → 한글 매핑
 const regionNameMap = {
-  'Seoul': '서울',
-  'Incheon': '인천광역시',
-  'Daejeon': '대전광역시',
-  'Daegu': '대구광역시',
-  'Gwangju': '광주광역시',
-  'Ulsan': '울산광역시',
-  'Busan': '부산광역시',
-  'Sejong': '세종특별자치시',
-  'Gyeonggi': '경기도',
-  'Gangwon': '강원도',
-  'North Chungcheong': '충청북도',
-  'South Chungcheong': '충청남도',
-  'North Jeolla': '전라북도',
-  'South Jeolla': '전라남도',
-  'North Gyeongsang': '경상북도',
-  'South Gyeongsang': '경상남도',
-  'Jeju': '제주특별자치도',
+  Seoul: "서울",
+  Incheon: "인천광역시",
+  Daejeon: "대전광역시",
+  Daegu: "대구광역시",
+  Gwangju: "광주광역시",
+  Ulsan: "울산광역시",
+  Busan: "부산광역시",
+  Sejong: "세종특별자치시",
+  Gyeonggi: "경기도",
+  Gangwon: "강원도",
+  "North Chungcheong": "충청북도",
+  "South Chungcheong": "충청남도",
+  "North Jeolla": "전라북도",
+  "South Jeolla": "전라남도",
+  "North Gyeongsang": "경상북도",
+  "South Gyeongsang": "경상남도",
+  Jeju: "제주특별자치도",
 };
 
 export default function MapPage({ onNavigate }) {
-  const [selected, setSelected] = useState(''); // ''이면 전국
+  const [selected, setSelected] = useState(""); // ''이면 전국
   const [category, setCategory] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -354,13 +352,17 @@ export default function MapPage({ onNavigate }) {
   const cityList = Object.keys(regionNameMap);
 
   // ✅ 서버 요청 함수
-  const fetchCategory = async (regionName = '') => {
+  const fetchCategory = async (regionName = "") => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const query = regionName ? `?region=${encodeURIComponent(regionName)}` : '';
-      const res = await fetch(`http://10.10.10.12:8000/api/maps/overview/${query}`);
+      const query = regionName
+        ? `?region=${encodeURIComponent(regionName)}`
+        : "";
+      const res = await fetch(
+        `http://10.10.10.12:8000/api/map/overview/${query}`,
+      );
 
       if (!res.ok) throw new Error("데이터 요청 실패");
 
@@ -368,7 +370,7 @@ export default function MapPage({ onNavigate }) {
 
       setCategory(result.top10_categories || []);
     } catch (err) {
-      setError(err.message || '알 수 없는 오류 발생');
+      setError(err.message || "알 수 없는 오류 발생");
       setCategory([]);
     } finally {
       setIsLoading(false);
@@ -382,7 +384,7 @@ export default function MapPage({ onNavigate }) {
 
   // ✅ 도시 클릭 시
   const onLocationClick = (event) => {
-    const region = event.target.getAttribute('name');
+    const region = event.target.getAttribute("name");
     setSelected(region);
     fetchCategory(regionNameMap[region]); // 한글명으로 요청
   };
@@ -395,16 +397,16 @@ export default function MapPage({ onNavigate }) {
 
   // ✅ 전국 버튼 클릭 시
   const handleNationwide = () => {
-    setSelected('');
+    setSelected("");
     fetchCategory(); // 전체 요청
   };
 
   return (
-    <div style={{ padding: '24px', fontFamily: 'sans-serif' }}>
-      <h2 style={{ marginBottom: '16px' }}>
+    <div style={{ padding: "24px", fontFamily: "sans-serif" }}>
+      <h2 style={{ marginBottom: "16px" }}>
         {selected
           ? `${regionNameMap[selected] || selected} 선택됨`
-          : '전국 통계'}
+          : "전국 통계"}
       </h2>
 
       {/* SVG 지도 */}
@@ -413,8 +415,8 @@ export default function MapPage({ onNavigate }) {
         onLocationClick={onLocationClick}
         locationClassName={(location) =>
           location.name === selected
-            ? 'svg-map__location svg-map__location--selected'
-            : 'svg-map__location'
+            ? "svg-map__location svg-map__location--selected"
+            : "svg-map__location"
         }
       />
       <style>{`
@@ -424,19 +426,19 @@ export default function MapPage({ onNavigate }) {
       `}</style>
 
       {/* 도시 선택 버튼 */}
-      <div style={{ marginTop: '24px' }}>
-        <h3 style={{ marginBottom: '12px' }}>도시 선택</h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      <div style={{ marginTop: "24px" }}>
+        <h3 style={{ marginBottom: "12px" }}>도시 선택</h3>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           <button
             onClick={handleNationwide}
             style={{
-              padding: '8px 12px',
-              backgroundColor: selected === '' ? '#2563eb' : '#f1f5f9',
-              color: selected === '' ? 'white' : '#1e293b',
-              border: '1px solid #cbd5e1',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '14px'
+              padding: "8px 12px",
+              backgroundColor: selected === "" ? "#2563eb" : "#f1f5f9",
+              color: selected === "" ? "white" : "#1e293b",
+              border: "1px solid #cbd5e1",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "14px",
             }}
           >
             전국
@@ -446,13 +448,13 @@ export default function MapPage({ onNavigate }) {
               key={engName}
               onClick={() => handleCitySelect(engName)}
               style={{
-                padding: '8px 12px',
-                backgroundColor: selected === engName ? '#2563eb' : '#f1f5f9',
-                color: selected === engName ? 'white' : '#1e293b',
-                border: '1px solid #cbd5e1',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '14px'
+                padding: "8px 12px",
+                backgroundColor: selected === engName ? "#2563eb" : "#f1f5f9",
+                color: selected === engName ? "white" : "#1e293b",
+                border: "1px solid #cbd5e1",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "14px",
               }}
             >
               {regionNameMap[engName]}
@@ -462,17 +464,22 @@ export default function MapPage({ onNavigate }) {
       </div>
 
       {/* 카테고리 영역 */}
-      <div style={{ marginTop: '40px' }}>
+      <div style={{ marginTop: "40px" }}>
         <h2>분야 통계</h2>
         {isLoading && <p>불러오는 중...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         {!isLoading && !error && category.length === 0 && <p>데이터 없음</p>}
-        {!isLoading && !error && category.map(cat => (
-          <div key={cat.id} style={{ marginBottom: '8px' }}>
-            <p>{cat.category} ({cat.count})</p>
-            <button onClick={() => onNavigate('task', cat)}>확인</button>  //확인버튼눌렀을때 fetchCategory
-          </div>
-        ))}
+        {!isLoading &&
+          !error &&
+          category.map((cat) => (
+            <div key={cat.id} style={{ marginBottom: "8px" }}>
+              <p>
+                {cat.category} ({cat.count})
+              </p>
+              <button onClick={() => onNavigate("task", cat)}>확인</button>{" "}
+              //확인버튼눌렀을때 fetchCategory
+            </div>
+          ))}
       </div>
 
       {/* 향후 그래프 영역 */}
@@ -498,7 +505,9 @@ const TaskPage = ({ category, onNavigate }) => {
 
       try {
         const encodedCategory = encodeURIComponent(category);
-        const res = await fetch(`http://10.10.10.12:8000/api/maps/overview/category_detail/${encodedCategory}`);
+        const res = await fetch(
+          `http://10.10.10.12:8000/api/map/overview/category_detail/${encodedCategory}`,
+        );
         if (!res.ok) throw new Error("업무 상세 요청 실패");
         const result = await res.json(); // 백엔드에서 id 포함된 배열을 반환
         setTasks(result);
@@ -514,18 +523,18 @@ const TaskPage = ({ category, onNavigate }) => {
   }, [category]);
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: "24px" }}>
       <h2>카테고리: {category}</h2>
-      <button onClick={() => onNavigate('map')}>← 돌아가기</button>
+      <button onClick={() => onNavigate("map")}>← 돌아가기</button>
 
       {isLoading && <p>로딩 중...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {!isLoading && !error && tasks.length === 0 && <p>업무 데이터 없음</p>}
 
       {!isLoading && !error && (
         <ul>
           {tasks.map((task) => (
-            <li key={task.id} style={{ margin: '8px 0' }}>
+            <li key={task.id} style={{ margin: "8px 0" }}>
               <strong>{task.task}</strong>: {task.count}건
             </li>
           ))}
@@ -534,7 +543,3 @@ const TaskPage = ({ category, onNavigate }) => {
     </div>
   );
 };
-
-
-
-
