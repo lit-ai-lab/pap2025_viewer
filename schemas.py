@@ -49,6 +49,16 @@ class TaskStats(BaseModel):
     task: str
     count: int
 
+class Task(BaseModel):
+    rank: int
+    name: str
+    category: str
+
+# # 권역별 분야(정태적)
+class RegionTasks(BaseModel):
+    region: str
+    tasks: List[Task]
+
 
 class ViewerFilter(BaseModel):
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)

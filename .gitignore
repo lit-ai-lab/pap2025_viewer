@@ -61,3 +61,4 @@ alembic/
 alembic.ini
 *.pdf
 
+.vscode-server/

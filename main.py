@@ -9,6 +9,8 @@ from domain.viewer.router import router as viewer_router
 from domain.map.router import router as map_router
 from domain.metadata.router import router as metadata_router
 
+
+#2025-07-24  s
 app = FastAPI(title="자체감사 시스템", version="1.0")
 
 # CORS 설정
