@@ -62,3 +62,4 @@ alembic.ini
 *.pdf
 
 .vscode-server/
+.ssh/
