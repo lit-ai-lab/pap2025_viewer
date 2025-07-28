@@ -8,6 +8,7 @@ from datetime import datetime
 from domain.viewer.router import router as viewer_router
 from domain.map.router import router as map_router
 from domain.metadata.router import router as metadata_router
+from domain.pdf.router import router as pdf_router
 
 
 #2025-07-24  s
@@ -27,7 +28,7 @@ app.add_middleware(
 app.include_router(viewer_router, prefix="/api/viewer", tags=["Viewer"])
 app.include_router(map_router, prefix="/api/maps", tags=["Map"])
 app.include_router(metadata_router, prefix="/api", tags=["Metadata"])
-
+app.include_router(pdf_router,tags=["PDF"])
 #app.mount("/",StaticFiles(directory="frontend/FE/dist", html=True),name="frontend")
 
 # Mount static files from the frontend build
