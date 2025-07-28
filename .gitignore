@@ -63,3 +63,7 @@ alembic.ini
 
 .vscode-server/
 .ssh/
+
+
+!frontend/FE/
+!frontend/FE/**/*
