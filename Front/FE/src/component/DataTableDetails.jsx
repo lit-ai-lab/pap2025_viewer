@@ -10,7 +10,7 @@ const DataTableDetails = ({ data, onNavigate }) => {
     const fetchPresignedUrl = async () => {
       if (!data?.file_hash) return;
 
-      const requestUrl = `${import.meta.env.VITE_API_BASE_URL}/pdf-url?file_hash=${data.file_hash}`;
+      const requestUrl = `${import.meta.env.VITE_API_BASE_URL}/api/pdf-url?file_hash=${data.file_hash}`;
       console.log("📡 file_hash 기반 Presigned URL 요청:", requestUrl);
 
       try {

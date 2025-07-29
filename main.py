@@ -28,7 +28,7 @@ app.add_middleware(
 app.include_router(viewer_router, prefix="/api/viewer", tags=["Viewer"])
 app.include_router(map_router, prefix="/api/maps", tags=["Map"])
 app.include_router(metadata_router, prefix="/api", tags=["Metadata"])
-app.include_router(pdf_router,tags=["PDF"])
+app.include_router(pdf_router, prefix="/api",tags=["PDF"])
 #app.mount("/",StaticFiles(directory="frontend/FE/dist", html=True),name="frontend")
 
 # Mount static files from the frontend build
