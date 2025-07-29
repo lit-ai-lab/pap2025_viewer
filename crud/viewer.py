@@ -45,7 +45,7 @@ def get_filtered_viewers(db: Session,
 
     # 6) 업무(task) 필터
     if filters.task_id is not None:
-        query = query.filter(ViewerModel.task == filters.task_id)
+        query = query.filter(ViewerModel.task.ilike(f"%{filters.task_id}%"))
 
     # 7) 키워드 검색 (summary, audit_result)
     if filters.keyword:
