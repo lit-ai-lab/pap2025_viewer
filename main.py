@@ -63,6 +63,11 @@ if os.path.exists("static"):
 def healthcheck():
     return {"status": "OK", "timestamp": datetime.utcnow().isoformat() + "Z"}
 
+@app.get("/api", include_in_schema=False)
+@app.get("/api/", include_in_schema=False)
+def api_root():
+    return {"message": "FastAPI API root"}
+
 
 # PDF 다운로드 API
 @app.get("/api/viewer/{uuid}/pdf", tags=["Viewer"])

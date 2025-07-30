@@ -7,7 +7,7 @@ from crud.metadata import get_home_metadata
 
 router = APIRouter(prefix="", tags=["Metadata"],)
 
-@router.get("", response_model=MD, summary="홈 메타데이터 조회")
+@router.get("/metadata", response_model=MD, summary="홈 메타데이터 조회")
 def read_home_metadata(db: Session = Depends(get_db)):
     """
     metadata 테이블에서

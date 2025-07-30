@@ -1,6 +1,9 @@
 // src/pages/HomePage.jsx
-import { UserCheck, Landmark, ClipboardList, ShieldCheck, Map, ChevronRight, Eye, SearchCheck, MapPinned } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import {
+  UserCheck, Landmark, ClipboardList, ShieldCheck,
+  SearchCheck, MapPinned, ChevronRight
+} from 'lucide-react';
 
 const HomePage = ({ onNavigate }) => {
   const [stats, setStats] = useState(null);
@@ -8,7 +11,7 @@ const HomePage = ({ onNavigate }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const requestUrl = `${import.meta.env.VITE_API_BASE_URL}/api`;
+        const requestUrl = `${import.meta.env.VITE_API_BASE_URL}/api/metadata`;
         console.log("📡 통계 데이터 요청:", requestUrl);
 
         const res = await fetch(requestUrl);
@@ -53,10 +56,35 @@ const HomePage = ({ onNavigate }) => {
 
           {/* 통계 카드 */}
           <div className="grid md:grid-cols-4 gap-6 mb-16">
-            <StatCard icon={<ShieldCheck className="w-10 h-10 text-slate-700" />} value={stats.inspection_agency_count.toLocaleString()} title="감사실시기관" />
-            <StatCard icon={<Landmark className="w-10 h-10 text-slate-700" />} value={stats.related_agency_count.toLocaleString()} title="감사대상기관" />
-            <StatCard icon={<ClipboardList className="w-10 h-10 text-slate-700" />} value={stats.audit_note_count.toLocaleString()} title="감사사항" />
-            <StatCard icon={<UserCheck className="w-10 h-10 text-slate-700" />} value={stats.case_uuid_count.toLocaleString()} title="자체감사결과" desc="공개문 기준" />
+            <StatCard
+              icon={<ShieldCheck className="w-10 h-10 text-slate-700" />}
+              value={typeof stats.inspection_agency_count === 'number'
+                ? stats.inspection_agency_count.toLocaleString()
+                : '0'}
+              title="감사실시기관"
+            />
+            <StatCard
+              icon={<Landmark className="w-10 h-10 text-slate-700" />}
+              value={typeof stats.related_agency_count === 'number'
+                ? stats.related_agency_count.toLocaleString()
+                : '0'}
+              title="감사대상기관"
+            />
+            <StatCard
+              icon={<ClipboardList className="w-10 h-10 text-slate-700" />}
+              value={typeof stats.audit_note_count === 'number'
+                ? stats.audit_note_count.toLocaleString()
+                : '0'}
+              title="감사사항"
+            />
+            <StatCard
+              icon={<UserCheck className="w-10 h-10 text-slate-700" />}
+              value={typeof stats.case_uuid_count === 'number'
+                ? stats.case_uuid_count.toLocaleString()
+                : '0'}
+              title="자체감사결과"
+              desc="공개문 기준"
+            />
           </div>
 
           {/* 네비게이션 카드 */}
@@ -88,7 +116,10 @@ const HomePage = ({ onNavigate }) => {
 
 export default HomePage;
 
-// ✅ 하위 UI 컴포넌트
+//
+// ✅ 내부 정의된 컴포넌트
+//
+
 const StatCard = ({ icon, value, title, desc }) => (
   <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
     <div className="flex items-center justify-between mb-4">
@@ -96,11 +127,11 @@ const StatCard = ({ icon, value, title, desc }) => (
       <span className="text-3xl font-bold text-slate-800">{value}</span>
     </div>
     <p className="text-sm text-slate-600 font-semibold">{title}</p>
-    <p className="text-xs text-slate-500 mt-1">{desc}</p>
+    {desc && <p className="text-xs text-slate-500 mt-1">{desc}</p>}
   </div>
 );
 
-const NavCard = ({ icon, title, desc, badge, onClick }) => (
+const NavCard = ({ icon, title, desc, onClick }) => (
   <div
     className="bg-white rounded-2xl shadow-lg hover:shadow-xl p-12 transition-all duration-300 cursor-pointer group border border-gray-200"
     onClick={onClick}
