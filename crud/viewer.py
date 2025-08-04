@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from models import Viewer as ViewerModel, OriginalText, DetailView
 from schemas import ViewerFilter
-
+from sqlalchemy import or_, and_
 
 def get_filtered_viewers(db: Session,
                          filters: ViewerFilter) -> List[ViewerModel]:
@@ -33,11 +33,6 @@ def get_filtered_viewers(db: Session,
             ViewerModel.date >= filters.start_date.isoformat(),
             ViewerModel.date <= filters.end_date.isoformat(),
         )
-    # elif filters.start_date:
-    #     query = query.filter(
-    #         ViewerModel.date >= filters.start_date.isoformat())
-    # elif filters.end_date:
-    #     query = query.filter(ViewerModel.date <= filters.end_date.isoformat())
 
     # 5) 분야(category) 필터
     if filters.category_id is not None:
@@ -47,17 +42,48 @@ def get_filtered_viewers(db: Session,
     if filters.task_id is not None:
         query = query.filter(ViewerModel.task.ilike(f"%{filters.task_id}%"))
 
-    # 7) 키워드 검색 (summary, audit_result)
-    if filters.keyword:
-        kw = f"%{filters.keyword}%"
-        query = (query.join(
-            DetailView, ViewerModel.detail_view_id == DetailView.id).join(
-                OriginalText,
-                OriginalText.detail_view_id == DetailView.id).filter(
-                    OriginalText.preprocessed_text.ilike(kw)))
+    
+    # 7) 키워드 검색 (summary, audit_result → preprocessed_text 기준)
+    if filters.keyword or filters.keyword_extras:
+        query = query.join(
+            DetailView, ViewerModel.detail_view_id == DetailView.id
+        ).join(
+            OriginalText, OriginalText.detail_view_id == DetailView.id
+        )
 
-    # 8) 특이사례 포함 여부
-    if not filters.include_special:
+        # FastAPI 쿼리에서 리스트가 문자열로 오는 경우 처리
+        if isinstance(filters.keyword_extras, str):
+            filters.keyword_extras = filters.keyword_extras.split(",")
+
+        # keyword + extras 병합
+        keywords = []
+        if filters.keyword:
+            keywords.append(filters.keyword.strip())
+        if filters.keyword_extras:
+            keywords.extend([kw.strip() for kw in filters.keyword_extras if kw.strip()])
+
+        # 필터링 조건
+        if keywords:
+            conditions = [
+                OriginalText.preprocessed_text.ilike(f"%{kw}%")
+                for kw in keywords
+            ]
+
+            mode = (filters.keyword_mode or "AND").upper()
+            if mode == "AND":
+                for cond in conditions:
+                    query = query.filter(cond)
+            elif mode == "OR":
+                query = query.filter(or_(*conditions))
+
+
+        # 특이사례 필터
+    if filters.include_special is True:
+        # 특이사례 있는 것만
+        query = query.filter(ViewerModel.special_case.isnot(None))
+    elif filters.include_special is False:
+        # 특이사례 없는 것만
         query = query.filter(ViewerModel.special_case.is_(None))
+    # 이러면 None이면 전체 조회 가능
 
     return query.all()

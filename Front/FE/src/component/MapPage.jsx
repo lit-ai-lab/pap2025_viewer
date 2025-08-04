@@ -7,7 +7,9 @@ import ChartTabs from './ChartTabs';
 import Modal from './Modal';
 import { BarChart3, Home, FileText, Eye } from 'lucide-react';
 
-const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryData }) => {
+import { useNavigate } from 'react-router-dom';
+
+const MapPage = ({ selected, setSelected, setCategoryData, categoryData }) => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [modalType, setModalType] = useState(null); // 'chart' | 'comparison' | null
@@ -15,10 +17,11 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
     const handleOpenChartModal = () => setModalType('chart');
     const handleOpenComparisonModal = () => setModalType('comparison');
     const handleCloseModal = () => setModalType(null);
+    const navigate = useNavigate();
 
     const cityList = useMemo(() => Object.keys(regionNameMap), []);
 
-    useEffect(() => {
+    useEffect(() => {   
         const korRegion = regionNameMap[selected] || '';
         handleFetch(selected ? korRegion : '');
     }, [selected]);
@@ -52,10 +55,10 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
                 <div className="flex justify-between items-center h-16">
                     <span className="text-xl font-bold text-slate-800">감사연구원</span>
                     <div className="flex space-x-6">
-                    <button onClick={() => onNavigate('home')} className="flex items-center px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-gray-50 rounded-lg">
+                    <button onClick={() => navigate('/')} className="flex items-center px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-gray-50 rounded-lg">
                         <Home className="w-4 h-4 mr-2" />홈
                     </button>
-                    <button onClick={() => onNavigate('main')} className="flex items-center px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-gray-50 rounded-lg">
+                    <button onClick={() => navigate('/main')} className="flex items-center px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-gray-50 rounded-lg">
                         <FileText className="w-4 h-4 mr-2" />감사현황 조회
                     </button>
                     </div>
@@ -66,7 +69,7 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
         {/* ✅ 메인 콘텐츠 */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
             {/* 분야 및 업무 */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+            {/* <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
             <div className="p-6 border-b border-gray-200 flex justify-between items-center">
                 <div>
                 <h2 className="text-xl font-semibold text-slate-800">분야 및 업무</h2>
@@ -83,10 +86,12 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
                 </button>
                 </div>
             </div>
-            </div>
+            </div> */}
 
             {/* ✅ 모달 */}
-            <Modal isOpen={modalType !== null} onClose={handleCloseModal}>
+            <Modal isOpen={modalType !== null} onClose={handleCloseModal}
+            title={modalType === 'chart' ? '상세 데이터 보기' : modalType === 'comparison' ? '비교표 보기' : ''} >
+                
             {modalType === 'chart' && categoryData.length > 0 && (
                 <ChartTabs
                 regionName={selected === '' ? '전국' : regionNameMap[selected]}
@@ -108,29 +113,29 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
             <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h2 className="text-xl font-semibold text-slate-800 mb-4">대한민국 지도</h2>
                 <ComposableMap projection="geoMercator" projectionConfig={{ scale: 5000, center: [127.5, 36.2] }} width={700} height={700}>
-                <Geographies geography={geoData}>
-                    {({ geographies }) =>
-                    geographies.map((geo) => {
-                        const engName = geo.properties.name;
-                        return (
-                        <Geography
-                            key={geo.rsmKey}
-                            geography={geo}
-                            onClick={() => handleCitySelect(engName)}
-                            style={{
-                            default: {
-                                fill: selected === engName ? "#1e293b" : "#cbd5e1",
-                                stroke: "#fff",
-                                strokeWidth: 1
-                            },
-                            hover: { fill: "#94a3b8", cursor: "pointer" },
-                            pressed: { fill: "#1e293b" }
-                            }}
-                        />
-                        );
-                    })
-                    }
-                </Geographies>
+                    <Geographies geography={geoData}>
+                        {({ geographies }) =>
+                            geographies.map((geo) => {
+                                const engName = geo.properties.name;
+                                return (
+                                <Geography
+                                    key={geo.rsmKey}
+                                    geography={geo}
+                                    onClick={() => handleCitySelect(engName)}
+                                    style={{
+                                    default: {
+                                        fill: selected === engName ? "#1e293b" : "#cbd5e1",
+                                        stroke: "#fff",
+                                        strokeWidth: 1
+                                    },
+                                    hover: { fill: "#94a3b8", cursor: "pointer" },
+                                    pressed: { fill: "#1e293b" }
+                                    }}
+                                />
+                                );
+                            })
+                        }
+                    </Geographies>
                 </ComposableMap>
             </div>
 
@@ -159,12 +164,32 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
             </div>
             </div>
 
+            {/* 분야 및 업무 */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                <h2 className="text-xl font-semibold text-slate-800">분야 및 업무</h2>
+                <p className="text-sm text-slate-600 mt-1">그래프 및 표로 확인하세요.</p>
+                </div>
+                <div className="flex gap-3">
+                <button onClick={handleOpenChartModal} className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg">
+                    <BarChart3 className="w-4 h-4" />
+                    상세 데이터 보기
+                </button>
+                <button onClick={handleOpenComparisonModal} className="inline-flex items-center gap-2 px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg">
+                    <FileText className="w-4 h-4" />
+                    비교표 보기
+                </button>
+                </div>
+            </div>
+            </div>
+
             {/* 통계 카드 */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
             <div className="p-6 border-b border-gray-200">
                 <h2 className="text-xl font-semibold text-slate-800">분야별 통계</h2>
                 <p className="text-sm text-slate-600 mt-1">
-                {selected ? regionNameMap[selected] : '전국'}의 분야별 감사 현황입니다.
+                    <span className='text-orange-600 font-medium'>{selected ? regionNameMap[selected] : '전국'}</span>의 분야별 감사 현황입니다.
                 </p>
             </div>
             <div className="p-6">
@@ -183,10 +208,12 @@ const MapPage = ({ selected, setSelected, onNavigate, setCategoryData, categoryD
                     <div key={cat.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md">
                         <div className="flex justify-between items-center mb-3">
                         <h3 className="font-semibold text-slate-800">{cat.category}</h3>
-                        <span className="text-2xl font-bold text-slate-700">{cat.count}</span>
+                        <span className="text-2xl font-bold text-slate-700">
+                            {typeof cat.count === 'number' ? cat.count.toLocaleString() : '0'}
+                        </span>
                         </div>
                         <button
-                        onClick={() => onNavigate('task', cat.category)}
+                        onClick={() => navigate('/task',{state:{selectedRegion: selected, category: cat.category,data: categoryData,},} )}
                         className="w-full flex items-center justify-center px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700"
                         >
                         <Eye className="w-4 h-4 mr-2" />

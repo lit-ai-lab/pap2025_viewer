@@ -10,12 +10,6 @@ const PdfViewer = ({ fileUrl }) => {
 
   return (
     <div className="text-center">
-      {/* <button
-        onClick={handleDownload}
-        className="px-4 py-2 mb-4 bg-blue-600 text-white rounded"
-      >
-        PDF 다운로드
-      </button> */}
       <div className="border rounded overflow-hidden h-[80vh]">
         <iframe
           src={fileUrl}

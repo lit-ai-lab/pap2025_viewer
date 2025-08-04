@@ -5,6 +5,7 @@ const BarPieChart = ({ regionName, categoryData }) => {
   const barChartRef = useRef(null);
   const pieChartRef = useRef(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [excludedTasks, setExcludedTasks] = useState(new Set());
 
   const colorPalette = [
     '#5470C6', '#91CC75', '#EE6666', '#FAC858', '#73C0DE',
@@ -15,9 +16,28 @@ const BarPieChart = ({ regionName, categoryData }) => {
     (c) => c.category === selectedCategory
   );
 
-  const sortedTasks = selectedCategoryObj
+  const allTasks = selectedCategoryObj
     ? [...selectedCategoryObj.tasks].sort((a, b) => b.count - a.count)
     : [];
+
+  const visibleTasks = allTasks.filter((t) => !excludedTasks.has(t.task));
+
+  // ✅ 고정 색상 매핑 (task → color)
+  const colorMap = allTasks.reduce((map, task, index) => {
+    map[task.task] = colorPalette[index % colorPalette.length];
+    return map;
+  }, {});
+
+  // ✅ 업무 토글 함수 (공통)
+  const handleTaskToggle = (taskName) => {
+    const newSet = new Set(excludedTasks);
+    if (newSet.has(taskName)) {
+      newSet.delete(taskName);
+    } else {
+      newSet.add(taskName);
+    }
+    setExcludedTasks(newSet);
+  };
 
   // 막대그래프
   useEffect(() => {
@@ -43,63 +63,63 @@ const BarPieChart = ({ regionName, categoryData }) => {
     };
 
     chart.setOption(option);
-    chart.on('click', (params) => setSelectedCategory(params.name));
+    chart.on('click', (params) => {
+      setSelectedCategory(params.name);
+      setExcludedTasks(new Set());
+    });
+
     return () => chart.dispose();
   }, [categoryData, regionName]);
 
   // 파이차트
   useEffect(() => {
-    if (!pieChartRef.current) return;
+    if (!pieChartRef.current || !selectedCategoryObj) return;
     const chart = echarts.init(pieChartRef.current);
 
-    const option = selectedCategoryObj
-      ? {
-          title: {
-            text: `${selectedCategoryObj.category} 업무 분포`,
-            left: 'center',
-            top: '5%',
-          },
-          tooltip: {
-            trigger: 'item',
-            formatter: '{b}: {c}건 ({d}%)',
-          },
-          legend: { show: false },
-          series: [
-            {
-              name: '업무',
-              type: 'pie',
-              radius: ['20%', '50%'],
-              center: ['50%', '45%'],
-              label: { show: false },
-              emphasis: {
-                label: {
-                  show: true,
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                },
-              },
-              labelLine: { show: false },
-              data: sortedTasks.map((t, idx) => ({
-                name: t.task,
-                value: t.count,
-                itemStyle: { color: colorPalette[idx % colorPalette.length] },
-              })),
+    const option = {
+      title: {
+        text: `${selectedCategoryObj.category} 업무 분포`,
+        left: 'center',
+        top: '5%',
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c}건 ({d}%)',
+      },
+      legend: { show: false },
+      series: [
+        {
+          name: '업무',
+          type: 'pie',
+          radius: ['20%', '50%'],
+          center: ['50%', '45%'],
+          label: { show: false },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: 16,
+              fontWeight: 'bold',
             },
-          ],
-        }
-      : {
-          title: {
-            text: '막대를 클릭하여 업무 분포 확인',
-            left: 'center',
-            top: 'center',
-            textStyle: { fontSize: 16, color: '#999' },
           },
-          series: [],
-        };
+          labelLine: { show: false },
+          data: visibleTasks.map((t) => ({
+            name: t.task,
+            value: t.count,
+            itemStyle: { color: colorMap[t.task] },
+          })),
+        },
+      ],
+    };
 
     chart.setOption(option, true);
+
+    // ✅ 파이차트 클릭도 동일한 토글 처리
+    chart.on('click', (params) => {
+      handleTaskToggle(params.name);
+    });
+
     return () => chart.dispose();
-  }, [selectedCategoryObj]);
+  }, [selectedCategoryObj, visibleTasks, excludedTasks]);
 
   useEffect(() => {
     const resize = () => {
@@ -121,22 +141,27 @@ const BarPieChart = ({ regionName, categoryData }) => {
       <div className="w-full lg:w-1/2 flex flex-col justify-start">
         <div ref={pieChartRef} className="w-full h-[400px]" />
 
-        {/* 업무 목록 (파이차트 순서, 색상 일치) */}
+        {/* 업무 목록 */}
         {selectedCategoryObj && (
           <div className="mt-0 px-4 py-2 w-full text-sm border rounded bg-white shadow">
+            {/* 📌 안내 문구 추가 */}
+            <p className="text-slate-500 text-sm mb-3">
+              ※ 업무 항목 클릭시 필터 가능
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {sortedTasks.map((t, idx) => {
-                const color = colorPalette[idx % colorPalette.length];
-
+              {allTasks.map((t) => {
+                const color = colorMap[t.task];
+                const isExcluded = excludedTasks.has(t.task);
                 return (
                   <div
-                    key={idx}
-                    className="flex items-center gap-2 p-2 border-2 rounded shadow-sm"
+                    key={t.task}
+                    onClick={() => handleTaskToggle(t.task)} // ✅ 클릭 이벤트 연결
+                    className={`cursor-pointer flex items-center gap-2 p-2 border-2 rounded shadow-sm ${isExcluded ? 'opacity-30' : ''}`}
                     style={{ borderColor: color }}
                   >
                     <div className="text-xs leading-snug">
                       <div>{t.task}</div>
-                      <div className="text-gray-500">{t.count}건</div>
+                      <div className="text-gray-500">{typeof t.count === 'number' ? t.count.toLocaleString() : '0'}건</div>
                     </div>
                   </div>
                 );

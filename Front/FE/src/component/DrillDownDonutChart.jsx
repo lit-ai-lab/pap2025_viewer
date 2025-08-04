@@ -214,7 +214,9 @@ const DrillDownDonutChart = ({ regionName, categoryData }) => {
                     <div className="font-semibold text-slate-700 text-sm truncate">
                       {selectedCategory ? item.task : item.category}
                     </div>
-                    <div className="text-slate-500 text-xs">{item.count}건</div>
+                    <div className="text-slate-500 text-xs">
+                      {typeof item.count === 'number' ? item.count.toLocaleString() : '0'}건
+                    </div>
                   </div>
                 </div>
               ))}

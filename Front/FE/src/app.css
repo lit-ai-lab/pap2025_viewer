@@ -12,5 +12,7 @@
     }
 }
 
-
-
+/* ✅ react-simple-maps 지도 클릭 시 outline 제거 */
+.rsm-geography:focus {
+    outline: none !important;
+}

@@ -28,12 +28,25 @@ def list_viewers(
     category_id: Optional[str] = Query(None, alias="categoryId"),
     task_id: Optional[str] = Query(None, alias="taskId"),
     keyword: Optional[str] = Query(None, alias="keyword"),
+    keyword_and: Optional[str] = Query(None, alias="keywordAnd"),
+    keyword_or: Optional[str] = Query(None, alias="keywordOr"),
+    keyword_mode: Optional[str] = Query(None, alias="keywordMode"),              # ✅ 추가
+    keyword_extras: Optional[List[str]] = Query(None, alias="keywordExtras"),    # ✅ 추가
     include_special: Optional[bool] = Query(False, alias="includeSpecial"),
     start_date: Optional[str] = Query(None, alias="startDate"),
     end_date: Optional[str] = Query(None, alias="endDate"),
     db: Session = Depends(get_db),
 ):
     try:
+        if region_id == "권역":
+            region_id = None
+
+        if agency_id == "실시기관":
+            agency_id = None
+
+        if audit_type_id == "전체":
+            audit_type_id = None
+
         filters = ViewerFilter(
             region_id=region_id,
             agency_id=agency_id,
@@ -41,14 +54,21 @@ def list_viewers(
             category_id=category_id,
             task_id=task_id,
             keyword=keyword,
+            keyword_and=keyword_and,
+            keyword_or=keyword_or,
+            keyword_mode=keyword_mode,              # ✅ 포함
+            keyword_extras=keyword_extras,          # ✅ 포함
             include_special=include_special,
             start_date=start_date,
             end_date=end_date,
         )
         return get_filtered_viewers(db, filters)
+
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="오류")
+
+
     
 @router.get("/export-file", summary="엑셀 다운로드")
 def export_excel_file(

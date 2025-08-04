@@ -1,8 +1,9 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { Tooltip } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const DataTable = ({
-  data, isLoading, error, onNavigate,
+  data, isLoading, error,
   startDate, endDate,
   regionId, agencyId, auditTypeId,
   categoryId, taskId, keyword,
@@ -61,7 +62,7 @@ const DataTable = ({
             if (!res.ok) throw new Error("상세 정보 요청 실패");
 
             const detailData = await res.json();
-            onNavigate('details', detailData);
+            window.open(`/details?id=${id}`, '_blank');
         } catch (err) {
             console.error("상세 정보 오류:", err.message);
             alert("상세 정보를 불러오는 데 실패했습니다.");

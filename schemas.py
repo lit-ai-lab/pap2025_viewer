@@ -118,27 +118,28 @@ class ViewerFilter(BaseModel):
 
     region_id: Optional[str] = Field(None, alias="regionId")
     agency_id: Optional[str] = Field(None, alias="agencyId")
-    audit_type_id: Optional[str] = Field(None, alias="auditTypeId")  # ✅ 오타 수정
+    audit_type_id: Optional[str] = Field(None, alias="auditTypeId")
     start_date: Optional[date] = Field(None, alias="startDate")
     end_date: Optional[date] = Field(None, alias="endDate")
     category_id: Optional[str] = Field(None, alias="categoryId")
     task_id: Optional[str] = Field(None, alias="taskId")
     keyword: Optional[str] = Field(None, alias="keyword")
-    include_special: bool = Field(False, alias="includeSpecial")
+    keyword_mode: Optional[str] = Field(None, alias="keywordMode")        # "AND" or "OR"
+    keyword_extras: Optional[List[str]] = Field(None, alias="keywordExtras")  # ["a", "b"]
+    include_special: bool = Field(None, alias="includeSpecial")
 
     @validator("region_id", pre=True)
     def normalize_region_id(cls, v):
         if not v:
             return v
-        # 요청에 "광주광역시" 가 들어오면 "광주" 로 바꿔서 필터링
         return FULL_TO_SHORT.get(v, v)
 
     @validator("category_id", pre=True)
     def normalize_category(cls, v):
         if not v:
             return v
-        # “인사조직” → “11 인사조직”
         return CATEGORY_NAME_TO_FULL.get(v, v)
+
 
 
 class DetailViewOut(BaseModel):
@@ -157,6 +158,12 @@ class DetailViewOut(BaseModel):
     file_hash: Optional[str]
 
     model_config = ConfigDict(from_attributes=True)
+    
+    @validator("category", pre=True)
+    def strip_category_number(cls, v: str) -> str:
+        if isinstance(v, str) and " " in v:
+            return v.split(" ", 1)[1]  # 번호 제거 후 이름만 반환
+        return v
 
 #홈 메타데이터 feat.daon
 class MetaData(BaseModel):
