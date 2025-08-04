@@ -1,0 +1,360 @@
+[
+    {
+        "category": "세입(지방세)",
+        "category_id": 1,
+        "task": [
+            {
+                "task": "취득세 부과",
+                "task_id": 1
+            },
+            {
+                "task": "취득세 감면",
+                "task_id": 2
+            },
+            {
+                "task": "재산세 등 기타 지방세",
+                "task_id": 3
+            },
+            {
+                "task": "징수유예",
+                "task_id": 4
+            },
+            {
+                "task": "체납처분",
+                "task_id": 5
+            },
+            {
+                "task": "결손처분",
+                "task_id": 6
+            },
+            {
+                "task": "기타",
+                "task_id": 7
+            }
+        ]
+    },
+    {
+        "category": "세입(지방세외수입)",
+        "category_id": 2,
+        "task": [
+            {
+                "task": "경상적 세외수입",
+                "task_id": 1
+            },
+            {
+                "task": "임시적 세외수입",
+                "task_id": 2
+            },
+            {
+                "task": "기타",
+                "task_id": 3
+            }
+        ]
+    },
+    {
+        "category": "예산 편성 및 지출",
+        "category_id": 3,
+        "task": [
+            {
+                "task": "예산 편성",
+                "task_id": 1
+            },
+            {
+                "task": "예산 집행",
+                "task_id": 2
+            },
+            {
+                "task": "기타",
+                "task_id": 3
+            }
+        ]
+    },
+    {
+        "category": "계약",
+        "category_id": 4,
+        "task": [
+            {
+                "task": "예정가격 작성",
+                "task_id": 1
+            },
+            {
+                "task": "입찰공고 및 계약업체 선정",
+                "task_id": 2
+            },
+            {
+                "task": "계약체결 및 계약이행 감독",
+                "task_id": 3
+            },
+            {
+                "task": "검사 및 대가 지급",
+                "task_id": 4
+            },
+            {
+                "task": "기타",
+                "task_id": 5
+            }
+        ]
+    },
+    {
+        "category": "보조금",
+        "category_id": 5,
+        "task": [
+            {
+                "task": "교부",
+                "task_id": 1
+            },
+            {
+                "task": "사업수행",
+                "task_id": 2
+            },
+            {
+                "task": "정산",
+                "task_id": 3
+            },
+            {
+                "task": "사후관리",
+                "task_id": 4
+            },
+            {
+                "task": "기타",
+                "task_id": 5
+            }
+        ]
+    },
+    {
+        "category": "기금",
+        "category_id": 6,
+        "task": [
+            {
+                "task": "수입",
+                "task_id": 1
+            },
+            {
+                "task": "지출",
+                "task_id": 2
+            },
+            {
+                "task": "운용관리",
+                "task_id": 3
+            },
+            {
+                "task": "기타",
+                "task_id": 4
+            }
+        ]
+    },
+    {
+        "category": "국고금, 시·도·군 금고금(보관금)",
+        "category_id": 7,
+        "task": [
+            {
+                "task": "수납",
+                "task_id": 1
+            },
+            {
+                "task": "보관",
+                "task_id": 2
+            },
+            {
+                "task": "기타",
+                "task_id": 3
+            }
+        ]
+    },
+    {
+        "category": "국·공유재산",
+        "category_id": 8,
+        "task": [
+            {
+                "task": "취득",
+                "task_id": 1
+            },
+            {
+                "task": "사용허가 및 대부(관리)",
+                "task_id": 2
+            },
+            {
+                "task": "처분",
+                "task_id": 3
+            },
+            {
+                "task": "기타",
+                "task_id": 4
+            }
+        ]
+    },
+    {
+        "category": "유가증권",
+        "category_id": 9,
+        "task": [
+            {
+                "task": "취득",
+                "task_id": 1
+            },
+            {
+                "task": "출납, 보관",
+                "task_id": 2
+            },
+            {
+                "task": "기타",
+                "task_id": 3
+            }
+        ]
+    },
+    {
+        "category": "기획관리",
+        "category_id": 10,
+        "task": [
+            {
+                "task": "계획",
+                "task_id": 1
+            },
+            {
+                "task": "진행",
+                "task_id": 2
+            },
+            {
+                "task": "심사분석",
+                "task_id": 3
+            },
+            {
+                "task": "기타",
+                "task_id": 4
+            }
+        ]
+    },
+    {
+        "category": "인사조직",
+        "category_id": 11,
+        "task": [
+            {
+                "task": "조직 및 정원 운영",
+                "task_id": 1
+            },
+            {
+                "task": "임용(채용)",
+                "task_id": 2
+            },
+            {
+                "task": "승진임용",
+                "task_id": 3
+            },
+            {
+                "task": "근무성적 평정",
+                "task_id": 4
+            },
+            {
+                "task": "보직관리",
+                "task_id": 5
+            },
+            {
+                "task": "복무",
+                "task_id": 6
+            },
+            {
+                "task": "기타",
+                "task_id": 7
+            }
+        ]
+    },
+    {
+        "category": "문서관리",
+        "category_id": 12,
+        "task": [
+            {
+                "task": "문서 등의 작성",
+                "task_id": 1
+            },
+            {
+                "task": "문서의 처리",
+                "task_id": 2
+            },
+            {
+                "task": "문서의 보관 및 보존",
+                "task_id": 3
+            },
+            {
+                "task": "기타",
+                "task_id": 4
+            }
+        ]
+    },
+    {
+        "category": "협조보고",
+        "category_id": 13,
+        "task": [
+            {
+                "task": "업무협조",
+                "task_id": 1
+            },
+            {
+                "task": "추천·배정",
+                "task_id": 2
+            },
+            {
+                "task": "보고",
+                "task_id": 3
+            },
+            {
+                "task": "기타",
+                "task_id": 4
+            }
+        ]
+    },
+    {
+        "category": "규제·감독",
+        "category_id": 14,
+        "task": [
+            {
+                "task": "지도·감독",
+                "task_id": 1
+            },
+            {
+                "task": "단속규제",
+                "task_id": 2
+            },
+            {
+                "task": "법령·기준",
+                "task_id": 3
+            },
+            {
+                "task": "기타",
+                "task_id": 4
+            }
+        ]
+    },
+    {
+        "category": "민원 및 인허가",
+        "category_id": 15,
+        "task": [
+            {
+                "task": "건축허가",
+                "task_id": 1
+            },
+            {
+                "task": "주택건설 사업",
+                "task_id": 2
+            },
+            {
+                "task": "공장설립",
+                "task_id": 3
+            },
+            {
+                "task": "식품위생업 영업허가",
+                "task_id": 4
+            },
+            {
+                "task": "기타 허가·신고",
+                "task_id": 5
+            },
+            {
+                "task": "민원 및 민원 처리",
+                "task_id": 6
+            },
+            {
+                "task": "기타",
+                "task_id": 7
+            }
+        ]
+    }
+]

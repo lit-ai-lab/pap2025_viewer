@@ -1,4 +1,4 @@
-# Logs
+# 로그 파일
 logs
 *.log
 npm-debug.log*
@@ -7,18 +7,26 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# 빌드 출력물
+node_modules/
+dist/
+dist-ssr/
+
+# 로컬 환경 설정 (민감 정보 가능성 있음)
 *.local
 
-# Editor directories and files
+# 에디터 설정
 .vscode/*
-!.vscode/extensions.json
-.idea
+!.vscode/extensions.json  # 협업에 필요한 확장 추천은 허용
+.idea/
 .DS_Store
+
+# Visual Studio 관련
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# ✅ JSON 파일은 명시적으로 ignore하지 않음
+# (별도 *.json 항목 없음 → 업로드 가능)
