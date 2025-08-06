@@ -159,6 +159,8 @@ def load_json_to_db(json_path: Path):
 
             file_size = safe_get(item, "file_size")
             registration_date = safe_get(item, "registration_date")
+            auto_v2_list = safe_get(item, "auto_v2_세부업무")
+            auto_v2_detail_task = ", ".join(auto_v2_list) if isinstance(auto_v2_list, list) else auto_v2_list
 
             detail_entry = DetailView(
                 inspection_agency=inspection_agency,
@@ -173,6 +175,7 @@ def load_json_to_db(json_path: Path):
                 file_size=file_size,
                 registration_date=registration_date,
                 file_hash=file_hash,
+                auto_v2_detail_task=auto_v2_detail_task
             )
             session.add(detail_entry)
             session.flush()
@@ -254,4 +257,4 @@ def load_json_to_db(json_path: Path):
 # 실행
 # -----------------------
 if __name__ == "__main__":
-    load_json_to_db(Path(__file__).parent / "FINAL_DATA.json")
+    load_json_to_db(Path(__file__).parent / "final_data_a.json")

@@ -356,5 +356,15 @@
                 "task_id": 7
             }
         ]
+    },
+    {
+        "category": "기타",
+        "category_id": 16,
+        "task": [
+            {
+                "task": "기타",
+                "task_id": 1
+            }
+        ]
     }
 ]

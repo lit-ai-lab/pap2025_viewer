@@ -57,6 +57,7 @@ class DetailView(Base):
     file_size = Column(String, nullable=True)              # 파일크기
     registration_date = Column(String, nullable=True)      # 작성일
     file_hash = Column(Text, nullable=True)
+    auto_v2_detail_task = Column(String, nullable=True)
     
     viewers   = relationship("Viewer",       back_populates="detail_view")
     originals = relationship("OriginalText", back_populates="detail_view")

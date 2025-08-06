@@ -105,11 +105,7 @@ const HomePage = () => {
             />
           </div>
 
-          {/* 하단 정보 */}
-          <div className="text-center text-slate-500 border-t border-gray-200 pt-8">
-            <p className="text-sm mb-2">© 2024 대한민국 감사원. All Rights Reserved.</p>
-            <p className="text-xs">서울특별시 종로구 북촌로 112 (삼청동) | 대표전화: 02-2011-9114</p>
-          </div>
+        
         </div>
       </div>
     </div>

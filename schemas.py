@@ -156,6 +156,7 @@ class DetailViewOut(BaseModel):
     file_size: Optional[str]
     registration_date: Optional[str]
     file_hash: Optional[str]
+    auto_v2_detail_task: Optional[str]
 
     model_config = ConfigDict(from_attributes=True)
     
@@ -163,6 +164,12 @@ class DetailViewOut(BaseModel):
     def strip_category_number(cls, v: str) -> str:
         if isinstance(v, str) and " " in v:
             return v.split(" ", 1)[1]  # 번호 제거 후 이름만 반환
+        return v
+    @validator("auto_v2_detail_task", pre=True)
+    def strip_auto_v2_detail_task_number(cls, v: str) -> str:
+        if isinstance(v, str):
+            # 맨 앞에 있는 번호 패턴 (예: 1., 01-02., 1.2.3.) 제거 + 공백도 제거
+            return re.sub(r"^\s*\d+([.-]\d+)*\.\s*", "", v)
         return v
 
 #홈 메타데이터 feat.daon

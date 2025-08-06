@@ -118,6 +118,7 @@ const DataTableDetails = () => {
             </h2>
             <div className="space-y-4">
               <InfoItem label="분야 및 업무" value={`${data.category || '(내용 없음)'} - ${data.task || '(내용 없음)'}`} />
+              <InfoItem label="세부업무" value={data.auto_v2_detail_task || '(내용 없음)'} />
               <InfoItem label="요약" value={`(${data.summary || '(내용 없음)'})`} multiline />
               <InfoItem label="핵심 키워드" value={data.keyword || '(내용 없음)'} />
             </div>
