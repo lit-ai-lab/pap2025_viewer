@@ -170,14 +170,14 @@ const DataTable = ({
 
     return (
         <div className="w-full">
-            <div className="flex justify-end m-3">
+            {/* <div className="flex justify-end m-3">
                 <button
                     className="bg-green-700 text-white px-2 py-1.5 rounded hover:bg-green-700"
                     onClick={handleExportExcel}
                 >
                     엑셀 다운로드
                 </button>
-            </div>
+            </div> */}
             <div style={{ height: 600, width: '100%' }}>
                 <DataGrid
                     rows={rows}

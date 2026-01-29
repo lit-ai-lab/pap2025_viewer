@@ -161,8 +161,8 @@ const Filtering = ({
 
       {/* 3. 키워드 */}
       <div className="mb-6">
-        <label className="block text-sm font-semibold text-slate-700 mb-2">키워드</label>
-        <div className="flex gap-2 mb-2">
+        {/* <label className="block text-sm font-semibold text-slate-700 mb-2">키워드</label> */}
+        {/* <div className="flex gap-2 mb-2">
           <input
             name="keyword"
             value={filters.keyword}
@@ -190,7 +190,7 @@ const Filtering = ({
           >
             OR 추가
           </button>
-        </div>
+        </div> */}
 
         {extraKeywords.map((item, idx) => (
           <div key={idx} className="flex gap-2 items-center mt-2">
